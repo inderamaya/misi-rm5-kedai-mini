@@ -1,27 +1,27 @@
 export const BUDGET = 5;
 
 export const moneyChoices = [
-  { id: 'rm1', label: 'RM1', symbol: '💵', value: 1 },
-  { id: 'rm5', label: 'RM5', symbol: '💷', value: 5 },
-  { id: 'rm10', label: 'RM10', symbol: '💴', value: 10 },
+  { id: 'rm1', label: 'RM1', type: 'note1', value: 1 },
+  { id: 'rm5', label: 'RM5', type: 'note5', value: 5 },
+  { id: 'rm10', label: 'RM10', type: 'note10', value: 10 },
 ];
 
 export const items = [
-  { id: 'water', name: 'Air Mineral', price: 1, symbol: '💧', need: 3, good: 3, tag: 'Keperluan' },
-  { id: 'bread', name: 'Roti', price: 2, symbol: '🍞', need: 3, good: 3, tag: 'Keperluan' },
-  { id: 'banana', name: 'Pisang', price: 1, symbol: '🍌', need: 3, good: 3, tag: 'Keperluan' },
-  { id: 'milk', name: 'Susu Kotak', price: 3, symbol: '🥛', need: 2, good: 3, tag: 'Keperluan' },
-  { id: 'book', name: 'Buku Kecil', price: 4, symbol: '📘', need: 2, good: 2, tag: 'Kehendak' },
-  { id: 'toy', name: 'Mainan Kecil', price: 5, symbol: '🧸', need: 1, good: 1, tag: 'Kehendak' },
+  { id: 'water', name: 'Air Mineral', price: 1, type: 'water', need: 3, good: 3, tag: 'KEPERLUAN' },
+  { id: 'bread', name: 'Roti', price: 2, type: 'bread', need: 3, good: 3, tag: 'KEPERLUAN' },
+  { id: 'banana', name: 'Pisang', price: 1, type: 'banana', need: 3, good: 3, tag: 'KEPERLUAN' },
+  { id: 'milk', name: 'Susu Kotak', price: 3, type: 'milk', need: 2, good: 3, tag: 'KEPERLUAN' },
+  { id: 'book', name: 'Buku Kecil', price: 4, type: 'book', need: 2, good: 2, tag: 'KEPERLUAN' },
+  { id: 'toy', name: 'Mainan Kecil', price: 5, type: 'toy', need: 1, good: 1, tag: 'KEHENDAK' },
 ];
 
 export const flowSteps = [
-  { icon: '💰', title: 'Lihat Wang', desc: 'Saya ada RM5.' },
-  { icon: '🏷️', title: 'Lihat Harga', desc: 'Baca harga barang.' },
-  { icon: '🛒', title: 'Pilih Barang', desc: 'Pilih barang yang sesuai.' },
-  { icon: '➕', title: 'Kira Jumlah', desc: 'Tambah harga barang.' },
-  { icon: '✅', title: 'Semak Baki', desc: 'Pastikan wang cukup.' },
-  { icon: '🏆', title: 'Bayar', desc: 'Bayar dengan sopan.' },
+  { type: 'look_money', title: 'Lihat Wang', desc: 'Saya ada RM5.' },
+  { type: 'look_price', title: 'Lihat Harga', desc: 'Baca harga barang.' },
+  { type: 'choose_item', title: 'Pilih Barang', desc: 'Pilih barang yang sesuai.' },
+  { type: 'calculate', title: 'Kira Jumlah', desc: 'Tambah harga barang.' },
+  { type: 'check_balance', title: 'Semak Baki', desc: 'Pastikan wang cukup.' },
+  { type: 'pay', title: 'Bayar', desc: 'Bayar dengan sopan.' },
 ];
 
 export const quiz = [
