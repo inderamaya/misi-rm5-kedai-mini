@@ -1,62 +1,10 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Store, Coins, Map, ShoppingBasket, Brain, Home, Settings, BookOpen } from 'lucide-react';
+import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Coins, Map, ShoppingBasket, Brain, Home, BookOpen } from 'lucide-react';
 import './styles.css';
+import { BUDGET, moneyChoices, items, flowSteps, quiz } from './constants';
 
-const BUDGET = 5;
-
-const moneyChoices = [
-  { id: 'rm1', label: 'RM1', symbol: '💵', value: 1 },
-  { id: 'rm5', label: 'RM5', symbol: '💷', value: 5 },
-  { id: 'sen50', label: '50 sen', symbol: '🪙', value: 0.5 },
-];
-
-const items = [
-  { id: 'water', name: 'Air Mineral', price: 1, symbol: '💧', need: 3, good: 3, tag: 'Minuman sihat' },
-  { id: 'bread', name: 'Roti', price: 2, symbol: '🍞', need: 3, good: 3, tag: 'Makanan rehat' },
-  { id: 'banana', name: 'Pisang', price: 1, symbol: '🍌', need: 3, good: 3, tag: 'Buah' },
-  { id: 'milk', name: 'Susu Kotak', price: 3, symbol: '🥛', need: 2, good: 3, tag: 'Minuman berkhasiat' },
-  { id: 'book', name: 'Buku Kecil', price: 4, symbol: '📘', need: 2, good: 2, tag: 'Alat belajar' },
-  { id: 'toy', name: 'Mainan Kecil', price: 5, symbol: '🧸', need: 1, good: 1, tag: 'Kehendak' },
-];
-
-const flowSteps = [
-  { icon: '👀', title: 'Lihat Wang', desc: 'Saya ada RM5.' },
-  { icon: '🏷️', title: 'Lihat Harga', desc: 'Baca harga barang.' },
-  { icon: '🛒', title: 'Pilih Barang', desc: 'Pilih barang yang sesuai.' },
-  { icon: '➕', title: 'Kira Jumlah', desc: 'Tambah harga barang.' },
-  { icon: '✅', title: 'Semak Baki', desc: 'Pastikan wang cukup.' },
-  { icon: '🤝', title: 'Bayar', desc: 'Bayar dengan sopan.' },
-];
-
-const quiz = [
-  {
-    q: 'Kamu ada RM5. Roti RM2 dan air RM1. Adakah wang cukup?',
-    options: ['Ya, cukup', 'Tidak cukup'],
-    answer: 0,
-    explain: 'RM2 + RM1 = RM3. Baki RM2.'
-  },
-  {
-    q: 'Barang manakah lebih sesuai untuk waktu rehat?',
-    options: ['Air mineral dan roti', 'Mainan kecil sahaja'],
-    answer: 0,
-    explain: 'Air mineral dan roti lebih sesuai kerana membantu badan semasa rehat.'
-  },
-  {
-    q: 'Apakah langkah pertama sebelum membeli?',
-    options: ['Lihat wang', 'Terus bayar', 'Ambil semua barang'],
-    answer: 0,
-    explain: 'Kita perlu tahu jumlah wang dahulu.'
-  },
-  {
-    q: 'Jika jumlah harga RM6 tetapi kamu ada RM5, apakah tindakan bijak?',
-    options: ['Pilih barang lain', 'Marah juruwang', 'Ambil juga barang itu'],
-    answer: 0,
-    explain: 'Kita perlu pilih barang yang cukup dengan wang.'
-  },
-];
-
-function speak(text, enabled = true) {
+function speak(text, enabled = true, onStart, onEnd) {
   if (!enabled) return;
   if (!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
@@ -64,6 +12,8 @@ function speak(text, enabled = true) {
   utterance.lang = 'ms-MY';
   utterance.rate = 0.86;
   utterance.pitch = 1.05;
+  if (onStart) utterance.onstart = onStart;
+  if (onEnd) utterance.onend = onEnd;
   window.speechSynthesis.speak(utterance);
 }
 
@@ -83,9 +33,13 @@ function Badge({ children }) {
   return <span className="badge">{children}</span>;
 }
 
-function AudioButton({ text, soundOn }) {
+function AudioButton({ text, soundOn, speaking, setSpeaking }) {
   return (
-    <button className="iconBtn" onClick={() => speak(text, soundOn)} aria-label="Dengar arahan">
+    <button
+      className={`iconBtn ${speaking ? 'speaking' : ''}`}
+      onClick={() => speak(text, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
+      aria-label="Dengar arahan"
+    >
       <Volume2 size={20} /> Dengar
     </button>
   );
@@ -121,7 +75,7 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
   );
 }
 
-function HomeScreen({ setPage, soundOn, progress }) {
+function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
   const intro = 'Selamat datang ke Misi RM5. Hari ini kita belajar mengenal wang, memilih barang, mengira jumlah harga, dan membuat keputusan bijak.';
   return (
     <main className="screen homeScreen">
@@ -134,7 +88,7 @@ function HomeScreen({ setPage, soundOn, progress }) {
           <p>Pilih barang, kira wang, semak baki, dan buat keputusan bijak.</p>
           <div className="buttonRow">
             <button className="primaryBtn" onClick={() => setPage('intro')}><Sparkles size={20}/> Mula Misi</button>
-            <AudioButton text={intro} soundOn={soundOn} />
+            <AudioButton text={intro} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
           </div>
         </div>
         <div className="heroMascot" aria-hidden="true">
@@ -162,7 +116,7 @@ function HomeScreen({ setPage, soundOn, progress }) {
   );
 }
 
-function IntroScreen({ setPage, soundOn }) {
+function IntroScreen({ setPage, soundOn, speaking, setSpeaking }) {
   const text = 'Kamu ada RM5. Tugas kamu ialah memilih barang yang sesuai. Pastikan wang cukup dan kira baki.';
   return (
     <main className="screen">
@@ -179,22 +133,20 @@ function IntroScreen({ setPage, soundOn }) {
         </div>
         <div className="buttonRow">
           <button className="primaryBtn" onClick={() => setPage('money')}>Seterusnya: Kenali Wang</button>
-          <AudioButton text={text} soundOn={soundOn}/>
+          <AudioButton text={text} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
   );
 }
 
-function MoneyScreen({ setPage, soundOn, setProgress }) {
+function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const [chosen, setChosen] = useState(null);
   const correct = chosen === 'rm5';
   function award() {
     setProgress(prev => {
       const badges = prev.badges.includes('Kenali Wang') ? prev.badges : [...prev.badges, 'Kenali Wang'];
-      const next = { ...prev, badges };
-      saveProgress(next);
-      return next;
+      return { ...prev, badges };
     });
   }
   useEffect(() => { if (correct) award(); }, [correct]);
@@ -213,32 +165,30 @@ function MoneyScreen({ setPage, soundOn, setProgress }) {
           ))}
         </div>
         {chosen && (
-          <div className={correct ? 'feedback good' : 'feedback retry'}>
+          <div className={correct ? 'feedback good' : 'feedback retry'} aria-live="polite">
             {correct ? 'Bagus! RM5 ialah wang untuk misi hari ini.' : 'Cuba lagi. Cari wang yang tertulis RM5.'}
           </div>
         )}
         <div className="buttonRow">
           <button className="primaryBtn" disabled={!correct} onClick={() => setPage('flow')}>Seterusnya: Peta Alir</button>
-          <AudioButton text="Klik wang yang bernilai RM5. Lihat simbol dan nombor pada wang." soundOn={soundOn}/>
+          <AudioButton text="Klik wang yang bernilai RM5. Lihat simbol dan nombor pada wang." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
   );
 }
 
-function FlowScreen({ setPage, soundOn, setProgress }) {
+function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const [done, setDone] = useState([]);
   const complete = done.length === flowSteps.length;
   useEffect(() => {
     if (complete) {
       setProgress(prev => {
         const badges = prev.badges.includes('Peta Alir') ? prev.badges : [...prev.badges, 'Peta Alir'];
-        const next = { ...prev, badges };
-        saveProgress(next);
-        return next;
+        return { ...prev, badges };
       });
     }
-  }, [complete]);
+  }, [complete, setProgress]);
   return (
     <main className="screen">
       <section className="missionCard wide">
@@ -247,7 +197,10 @@ function FlowScreen({ setPage, soundOn, setProgress }) {
         <p className="bigInstruction">Tekan setiap langkah. Baca dan ikut urutan.</p>
         <div className="flowGrid">
           {flowSteps.map((s, idx) => (
-            <button key={s.title} className={`flowStep ${done.includes(idx) ? 'done' : ''}`} onClick={() => setDone(prev => prev.includes(idx) ? prev : [...prev, idx])}>
+            <button key={s.title} className={`flowStep ${done.includes(idx) ? 'done' : ''}`} onClick={() => setDone(prev => {
+              if (idx === prev.length) return [...prev, idx];
+              return prev;
+            })}>
               <span className="stepNumber">{idx + 1}</span>
               <span className="stepIcon">{s.icon}</span>
               <strong>{s.title}</strong>
@@ -255,17 +208,17 @@ function FlowScreen({ setPage, soundOn, setProgress }) {
             </button>
           ))}
         </div>
-        {complete && <div className="feedback good">Hebat! Kamu sudah ikut peta alir dengan betul.</div>}
+        {complete && <div className="feedback good" aria-live="polite">Hebat! Kamu sudah ikut peta alir dengan betul.</div>}
         <div className="buttonRow">
           <button className="primaryBtn" disabled={!complete} onClick={() => setPage('shop')}>Seterusnya: Misi Kedai</button>
-          <AudioButton text="Peta alir membantu kita menyusun langkah membeli barang. Lihat wang, lihat harga, pilih barang, kira jumlah, semak baki dan bayar." soundOn={soundOn}/>
+          <AudioButton text="Peta alir membantu kita menyusun langkah membeli barang. Lihat wang, lihat harga, pilih barang, kira jumlah, semak baki dan bayar." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
   );
 }
 
-function ShopScreen({ setPage, soundOn, setProgress }) {
+function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const [basket, setBasket] = useState([]);
   const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
   const balance = BUDGET - total;
@@ -279,12 +232,10 @@ function ShopScreen({ setPage, soundOn, setProgress }) {
     if (excellent) {
       setProgress(prev => {
         const badges = prev.badges.includes('Pembeli Bijak') ? prev.badges : [...prev.badges, 'Pembeli Bijak'];
-        const next = { ...prev, badges };
-        saveProgress(next);
-        return next;
+        return { ...prev, badges };
       });
     }
-  }, [excellent]);
+  }, [excellent, setProgress]);
 
   return (
     <main className="screen">
@@ -312,21 +263,24 @@ function ShopScreen({ setPage, soundOn, setProgress }) {
             <hr />
             <p><strong>Jumlah:</strong> RM{total}</p>
             <p><strong>Baki:</strong> RM{balance}</p>
-            {total > BUDGET && <div className="feedback retry">Wang tidak cukup. Kurangkan barang.</div>}
-            {valid && !hasNeed && <div className="feedback retry">Wang cukup, tetapi cuba pilih barang yang lebih diperlukan.</div>}
-            {excellent && <div className="feedback good">Pilihan bijak! Wang cukup dan barang sesuai.</div>}
+            <div aria-live="polite">
+              {total > BUDGET && <div className="feedback retry">Wang tidak cukup. Kurangkan barang.</div>}
+              {valid && !hasNeed && <div className="feedback retry">Wang cukup, tetapi cuba pilih barang yang lebih diperlukan.</div>}
+              {valid && hasNeed && basket.length < 2 && total < BUDGET && <div className="feedback retry">Bagus, tapi kamu masih ada baki. Cuba pilih satu lagi barang.</div>}
+              {excellent && <div className="feedback good">Pilihan bijak! Wang cukup dan barang sesuai.</div>}
+            </div>
           </aside>
         </div>
         <div className="buttonRow">
           <button className="primaryBtn" disabled={!excellent} onClick={() => setPage('wise')}>Seterusnya: Pilihan Bijak</button>
-          <AudioButton text="Pilih barang. Lihat harga. Pastikan jumlah tidak lebih daripada RM5. Cuba pilih barang yang diperlukan." soundOn={soundOn}/>
+          <AudioButton text="Pilih barang. Lihat harga. Pastikan jumlah tidak lebih daripada RM5. Cuba pilih barang yang diperlukan." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
   );
 }
 
-function WiseChoiceScreen({ setPage, soundOn }) {
+function WiseChoiceScreen({ setPage, soundOn, speaking, setSpeaking }) {
   const [active, setActive] = useState(items[0]);
   return (
     <main className="screen">
@@ -356,14 +310,14 @@ function WiseChoiceScreen({ setPage, soundOn }) {
         </div>
         <div className="buttonRow">
           <button className="primaryBtn" onClick={() => setPage('quiz')}>Seterusnya: Kuiz</button>
-          <AudioButton text="Carta bijak membantu kita memilih barang. Lihat harga, keperluan dan manfaat barang." soundOn={soundOn}/>
+          <AudioButton text="Carta bijak membantu kita memilih barang. Lihat harga, keperluan dan manfaat barang." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
   );
 }
 
-function QuizScreen({ setPage, soundOn, setProgress }) {
+function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const [answers, setAnswers] = useState({});
   const answered = Object.keys(answers).length;
   const score = quiz.reduce((sum, q, idx) => sum + (answers[idx] === q.answer ? 1 : 0), 0);
@@ -372,12 +326,10 @@ function QuizScreen({ setPage, soundOn, setProgress }) {
     if (complete) {
       setProgress(prev => {
         const badges = score >= 3 && !prev.badges.includes('Juara Misi') ? [...prev.badges, 'Juara Misi'] : prev.badges;
-        const next = { ...prev, badges, quizScore: score };
-        saveProgress(next);
-        return next;
+        return { ...prev, badges, quizScore: score };
       });
     }
-  }, [complete, score]);
+  }, [complete, score, setProgress]);
   return (
     <main className="screen">
       <section className="missionCard wide">
@@ -393,17 +345,17 @@ function QuizScreen({ setPage, soundOn, setProgress }) {
                 ))}
               </div>
               {answers[idx] !== undefined && (
-                <div className={answers[idx] === q.answer ? 'feedback good' : 'feedback retry'}>
+                <div className={answers[idx] === q.answer ? 'feedback good' : 'feedback retry'} aria-live="polite">
                   {answers[idx] === q.answer ? 'Betul! ' : 'Cuba semak semula. '} {q.explain}
                 </div>
               )}
             </div>
           ))}
         </div>
-        {complete && <div className="scoreBanner"><Trophy /> Skor: {score}/{quiz.length}</div>}
+        {complete && <div className="scoreBanner" aria-live="polite"><Trophy /> Skor: {score}/{quiz.length}</div>}
         <div className="buttonRow">
           <button className="primaryBtn" disabled={!complete} onClick={() => setPage('finish')}>Lihat Rumusan</button>
-          <AudioButton text="Jawab kuiz. Pilih jawapan yang paling bijak. Kamu boleh cuba lagi jika salah." soundOn={soundOn}/>
+          <AudioButton text="Jawab kuiz. Pilih jawapan yang paling bijak. Kamu boleh cuba lagi jika salah." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
         </div>
       </section>
     </main>
@@ -507,6 +459,7 @@ function TeacherGuide({ setPage }) {
 
 function App() {
   const [page, setPage] = useState('home');
+  const [speaking, setSpeaking] = useState(false);
   const [progress, setProgress] = useState(loadProgress);
   const [soundOn, setSoundOn] = useState(true);
   const [largeText, setLargeText] = useState(false);
@@ -523,22 +476,22 @@ function App() {
   ].join(' '), [largeText, highContrast, reduceMotion]);
 
   function reset() {
+    if (!window.confirm('Adakah anda pasti mahu set semula semua kemajuan?')) return;
     const next = { badges: [], quizScore: 0 };
     setProgress(next);
-    saveProgress(next);
     setPage('home');
   }
 
   return (
     <div className={className}>
       <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} highContrast={highContrast} setHighContrast={setHighContrast} largeText={largeText} setLargeText={setLargeText} reduceMotion={reduceMotion} setReduceMotion={setReduceMotion} />
-      {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} progress={progress} />}
-      {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} />}
-      {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} />}
-      {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} />}
-      {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} />}
-      {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} />}
-      {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} />}
+      {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} progress={progress} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />}
+      {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
       {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} />}
       {page === 'teacher' && <TeacherGuide setPage={setPage} />}
       <button className="resetBtn" onClick={reset}><RefreshCcw size={16}/> Reset</button>
