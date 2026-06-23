@@ -12,6 +12,10 @@
   --ink: #182230;
   --panel: rgba(255, 255, 255, 0.92);
   --shadow: 0 10px 0 rgba(0,0,0,0.18), 0 22px 35px rgba(0,0,0,0.22);
+  --mario-red: #E52521;
+  --mario-blue: #049CD8;
+  --mario-gold: #FBD000;
+  --mario-brick: #944828;
   font-family: Inter, "Trebuchet MS", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
@@ -45,7 +49,7 @@ p, li { font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.55; }
 .primaryBtn:disabled { opacity: 0.45; cursor: not-allowed; }
 .heroMascot { display: grid; place-items: center; position: relative; }
 .shopSprite { font-size: clamp(5rem, 13vw, 12rem); filter: drop-shadow(0 10px 0 rgba(0,0,0,0.2)); }
-.learnerSprite { position: absolute; bottom: 70px; right: 28%; font-size: clamp(3rem, 8vw, 7rem); animation: bounce 1.3s ease-in-out infinite; }
+.learnerSprite { position: absolute; bottom: 70px; right: 28%; font-size: clamp(3rem, 8vw, 7rem); animation: mario-jump 1.6s ease-in-out infinite; }
 .coinTrail { position: absolute; top: 80px; right: 12%; font-size: clamp(1.8rem, 4vw, 3rem); animation: float 2.1s ease-in-out infinite; }
 .cloud { position: absolute; font-size: 4rem; opacity: 0.8; }
 .cloud1 { top: 28px; right: 34%; }
@@ -64,6 +68,9 @@ p, li { font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.55; }
 .moneyGrid { grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); }
 .moneyCard, .itemCard, .flowStep, .quizOptions button, .smallItem { border: 4px solid #222; border-radius: 18px; padding: 16px; background: #fff; cursor: pointer; box-shadow: 0 6px 0 #222; font-weight: 900; min-height: 110px; }
 .moneyCard.selected, .itemCard.selected, .smallItem.selected, .quizOptions button.selected { background: #fff3a6; outline: 6px solid #1f63c7; }
+.question-block { background-color: var(--mario-gold) !important; border: 4px solid #000 !important; box-shadow: inset -4px -4px 0px 0px rgba(0,0,0,0.2), 0 6px 0 #000 !important; animation: block-pulse 2s infinite ease-in-out; }
+.brick-bg { background: linear-gradient(45deg, var(--mario-brick) 25%, transparent 25%) -10px 0, linear-gradient(-45deg, var(--mario-brick) 25%, transparent 25%) -10px 0, linear-gradient(45deg, transparent 75%, var(--mario-brick) 75%), linear-gradient(-45deg, transparent 75%, var(--mario-brick) 75%); background-size: 20px 20px; background-color: #bc5e38; }
+.coin-effect { position: absolute; font-size: 2rem; pointer-events: none; animation: coin-float 0.8s ease-out forwards; z-index: 100; }
 .moneySymbol { display: block; font-size: 4rem; }
 .feedback { margin: 16px 0; border: 4px solid #222; border-radius: 18px; padding: 14px 16px; font-size: 1.18rem; font-weight: 1000; }
 .good { background: #d7ffd1; }
@@ -94,13 +101,19 @@ p, li { font-size: clamp(1.05rem, 1.6vw, 1.35rem); line-height: 1.55; }
 .guideGrid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; }
 .guideGrid > div { background: #fff; border: 4px solid #222; border-radius: 18px; padding: 16px; }
 @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes mario-jump { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-40px) scaleX(0.9) scaleY(1.1); } }
+@keyframes coin-float { 0% { transform: translateY(0) opacity(1); } 100% { transform: translateY(-60px) opacity(0); } }
 @keyframes float { 0%, 100% { transform: translateY(0) rotate(-6deg); } 50% { transform: translateY(-16px) rotate(6deg); } }
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.05); background: #fff0b5; }
   100% { transform: scale(1); }
 }
-.iconBtn.speaking { animation: pulse 1s infinite ease-in-out; border-color: var(--blue); color: var(--blue); }
+@keyframes block-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+.iconBtn.speaking { animation: pulse 1s infinite ease-in-out; border-color: var(--mario-blue); color: var(--mario-blue); }
 .highContrast { --sky: #030712; --grass: #111827; --panel: #fff; --ink: #000; }
 .highContrast body, .highContrast { color: #000; }
 .highContrast .moneyCard, .highContrast .itemCard, .highContrast .flowStep, .highContrast .quizOptions button { border: 4px solid #000 !important; }

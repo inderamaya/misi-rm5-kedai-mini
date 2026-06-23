@@ -61,7 +61,7 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
       <div className="brand">
         <span className="pixelCoin">🪙</span>
         <div>
-          <strong>Misi RM5</strong>
+          <strong>Misi Super RM5</strong>
           <small>Kedai Mini Ajaib</small>
         </div>
       </div>
@@ -76,7 +76,7 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
 }
 
 function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
-  const intro = 'Selamat datang ke Misi RM5. Hari ini kita belajar mengenal wang, memilih barang, mengira jumlah harga, dan membuat keputusan bijak.';
+  const intro = 'Selamat datang ke Misi Super RM5. Hari ini kita belajar mengenal wang, memilih barang, mengira jumlah harga, dan membuat keputusan bijak.';
   return (
     <main className="screen homeScreen">
       <section className="heroCard castlePanel">
@@ -84,7 +84,7 @@ function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
         <div className="cloud cloud2">☁️</div>
         <div className="heroText">
           <Badge>Untuk MBPK Masalah Pembelajaran Tahap 2</Badge>
-          <h1>Misi RM5: Kedai Mini Ajaib</h1>
+          <h1>Misi Super RM5</h1>
           <p>Pilih barang, kira wang, semak baki, dan buat keputusan bijak.</p>
           <div className="buttonRow">
             <button className="primaryBtn" onClick={() => setPage('intro')}><Sparkles size={20}/> Mula Misi</button>
@@ -158,7 +158,7 @@ function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
         <p className="bigInstruction">Klik wang yang bernilai <strong>RM5</strong>.</p>
         <div className="moneyGrid">
           {moneyChoices.map(m => (
-            <button key={m.id} className={`moneyCard ${chosen === m.id ? 'selected' : ''}`} onClick={() => setChosen(m.id)}>
+            <button key={m.id} className={`moneyCard question-block ${chosen === m.id ? 'selected' : ''}`} onClick={() => setChosen(m.id)}>
               <span className="moneySymbol">{m.symbol}</span>
               <strong>{m.label}</strong>
             </button>
@@ -166,7 +166,7 @@ function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
         </div>
         {chosen && (
           <div className={correct ? 'feedback good' : 'feedback retry'} aria-live="polite">
-            {correct ? 'Bagus! RM5 ialah wang untuk misi hari ini.' : 'Cuba lagi. Cari wang yang tertulis RM5.'}
+            {correct ? 'Super! RM5 ialah wang untuk misi hari ini.' : 'Cuba lagi. Cari wang yang tertulis RM5.'}
           </div>
         )}
         <div className="buttonRow">
@@ -220,12 +220,18 @@ function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
 
 function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const [basket, setBasket] = useState([]);
+  const [lastAdded, setLastAdded] = useState(null);
   const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
   const balance = BUDGET - total;
   const valid = total > 0 && total <= BUDGET;
   const hasNeed = basket.some(id => items.find(i => i.id === id).need >= 2);
   const excellent = valid && hasNeed && basket.length >= 2;
   function toggleItem(id) {
+    const isAdding = !basket.includes(id);
+    if (isAdding) {
+      setLastAdded(id);
+      setTimeout(() => setLastAdded(null), 800);
+    }
     setBasket(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   }
   useEffect(() => {
@@ -246,7 +252,8 @@ function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
         <div className="shopLayout">
           <div className="itemGrid">
             {items.map(item => (
-              <button key={item.id} className={`itemCard ${basket.includes(item.id) ? 'selected' : ''}`} onClick={() => toggleItem(item.id)}>
+              <button key={item.id} className={`itemCard question-block ${basket.includes(item.id) ? 'selected' : ''}`} onClick={() => toggleItem(item.id)}>
+                {lastAdded === item.id && <span className="coin-effect">🪙</span>}
                 <span className="itemSymbol">{item.symbol}</span>
                 <strong>{item.name}</strong>
                 <span className="priceTag">RM{item.price}</span>
@@ -266,8 +273,8 @@ function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
             <div aria-live="polite">
               {total > BUDGET && <div className="feedback retry">Wang tidak cukup. Kurangkan barang.</div>}
               {valid && !hasNeed && <div className="feedback retry">Wang cukup, tetapi cuba pilih barang yang lebih diperlukan.</div>}
-              {valid && hasNeed && basket.length < 2 && total < BUDGET && <div className="feedback retry">Bagus, tapi kamu masih ada baki. Cuba pilih satu lagi barang.</div>}
-              {excellent && <div className="feedback good">Pilihan bijak! Wang cukup dan barang sesuai.</div>}
+              {valid && hasNeed && basket.length < 2 && total < BUDGET && <div className="feedback retry">Hebat, tapi kamu masih ada baki. Cuba pilih satu lagi barang.</div>}
+              {excellent && <div className="feedback good">Super! Pilihan bijak. Wang cukup dan barang sesuai.</div>}
             </div>
           </aside>
         </div>
@@ -346,7 +353,7 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
               </div>
               {answers[idx] !== undefined && (
                 <div className={answers[idx] === q.answer ? 'feedback good' : 'feedback retry'} aria-live="polite">
-                  {answers[idx] === q.answer ? 'Betul! ' : 'Cuba semak semula. '} {q.explain}
+                  {answers[idx] === q.answer ? 'Super! Betul! ' : 'Cuba semak semula. '} {q.explain}
                 </div>
               )}
             </div>
