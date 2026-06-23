@@ -13,7 +13,7 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.screenshot({ path: 'full_flow_2_intro.png' });
 
   // Go to Level 1: Money
-  await page.click('button:has-text("Seterusnya: Kenali Wang")');
+  await page.click('button:has-text("Seterusnya: Kenali RM5")');
   await expect(page.locator('h1')).toContainText('Kenali RM5');
   await page.click('button:has-text("RM5")', { force: true }); // Select RM5
   await page.screenshot({ path: 'full_flow_3_money.png' });
@@ -22,9 +22,9 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.click('button:has-text("Seterusnya: Peta Alir")');
   await expect(page.locator('h1')).toContainText('Peta Alir Pembeli Bijak');
   // Click steps in order
-  const steps = page.locator('.flowStep');
+  const steps = page.locator('.stepping-stone');
   for (let i = 0; i < 6; i++) {
-    await steps.nth(i).click();
+    await steps.nth(i).click({ force: true });
   }
   await page.screenshot({ path: 'full_flow_4_flow.png' });
 
