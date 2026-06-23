@@ -1,704 +1,816 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Coins, Map, ShoppingBasket, Brain, Home, BookOpen, Star, ArrowRight } from 'lucide-react';
+import { Volume2, VolumeX, RefreshCcw, Trophy, Target, Shield, Zap, Search, ShoppingCart, BarChart, MessageSquare, Home, Info, ArrowRight, CheckCircle, AlertTriangle } from 'lucide-react';
 import './styles.css';
-import { BUDGET, moneyChoices, items, flowSteps, quiz } from './constants';
+import { BUDGET, moneyChoices, items, flowSteps, challenge1, challenge2, challenge3 } from './constants';
 
-function speak(text, enabled = true, onStart, onEnd) {
-  if (!enabled) return;
-  if (!('speechSynthesis' in window)) return;
+// --- HELPERS ---
+
+function speak(text, enabled = true) {
+  if (!enabled || !('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const utterance = new SpeechSynthesisUtterance(text);
   utterance.lang = 'ms-MY';
-  utterance.rate = 0.86;
-  utterance.pitch = 1.05;
-  if (onStart) utterance.onstart = onStart;
-  if (onEnd) utterance.onend = onEnd;
+  utterance.rate = 0.9;
   window.speechSynthesis.speak(utterance);
 }
 
 function loadProgress() {
   try {
-    return JSON.parse(localStorage.getItem('misi-rm5-progress')) || { badges: [], quizScore: 0 };
+    return JSON.parse(localStorage.getItem('agen-rm5-progress')) || { badges: [], scene: 'home', items: [], reason1: '', reason2: '', reflection: '' };
   } catch {
-    return { badges: [], quizScore: 0 };
+    return { badges: [], scene: 'home', items: [], reason1: '', reason2: '', reflection: '' };
   }
 }
 
 function saveProgress(progress) {
-  localStorage.setItem('misi-rm5-progress', JSON.stringify(progress));
+  localStorage.setItem('agen-rm5-progress', JSON.stringify(progress));
 }
 
-// Custom SVG Icons
+// --- COMPONENTS ---
+
+const AgentBijak = ({ badge = true, size = "normal" }) => (
+  <div className={`agent-bijak ${size === 'small' ? 'scale-75' : ''}`}>
+    <div className="agent-head">
+      <div className="agent-visor" />
+    </div>
+    <div className="agent-body">
+      {badge && <div className="agent-badge">RM5</div>}
+    </div>
+  </div>
+);
+
 const Icons = {
+  coin10: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <circle cx="25" cy="25" r="20" />
+      <text x="25" y="32" textAnchor="middle" fontSize="14" fill="currentColor" fontWeight="bold">10</text>
+    </svg>
+  ),
+  coin20: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <circle cx="25" cy="25" r="20" />
+      <text x="25" y="32" textAnchor="middle" fontSize="14" fill="currentColor" fontWeight="bold">20</text>
+    </svg>
+  ),
+  coin50: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <circle cx="25" cy="25" r="20" />
+      <text x="25" y="32" textAnchor="middle" fontSize="14" fill="currentColor" fontWeight="bold">50</text>
+    </svg>
+  ),
   note1: () => (
-    <svg width="80" height="40" viewBox="0 0 80 40">
-      <rect width="80" height="40" rx="4" fill="#69D34F" stroke="#1C1C1C" strokeWidth="3" />
-      <circle cx="40" cy="20" r="12" fill="none" stroke="#1C1C1C" strokeWidth="2" />
-      <text x="40" y="25" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1C1C1C">RM1</text>
+    <svg viewBox="0 0 80 40" className="svg-icon" width="80" height="40">
+      <rect x="5" y="5" width="70" height="30" rx="2" />
+      <text x="40" y="27" textAnchor="middle" fontSize="12" fill="currentColor" fontWeight="bold">RM1</text>
     </svg>
   ),
   note5: () => (
-    <svg width="80" height="40" viewBox="0 0 80 40">
-      <rect width="80" height="40" rx="4" fill="#5BCBFF" stroke="#1C1C1C" strokeWidth="3" />
-      <circle cx="40" cy="20" r="12" fill="none" stroke="#1C1C1C" strokeWidth="2" />
-      <text x="40" y="25" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1C1C1C">RM5</text>
-    </svg>
-  ),
-  note10: () => (
-    <svg width="80" height="40" viewBox="0 0 80 40">
-      <rect width="80" height="40" rx="4" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
-      <circle cx="40" cy="20" r="12" fill="none" stroke="#1C1C1C" strokeWidth="2" />
-      <text x="40" y="25" textAnchor="middle" fontSize="12" fontWeight="bold" fill="#1C1C1C">RM10</text>
+    <svg viewBox="0 0 80 40" className="svg-icon" width="80" height="40">
+      <rect x="5" y="5" width="70" height="30" rx="2" fill="rgba(0, 85, 255, 0.2)" />
+      <text x="40" y="27" textAnchor="middle" fontSize="12" fill="currentColor" fontWeight="bold">RM5</text>
     </svg>
   ),
   water: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <path d="M25 5 L15 25 Q15 40 25 40 Q35 40 35 25 L25 5" fill="#5BCBFF" stroke="#1C1C1C" strokeWidth="3" />
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <path d="M25 5 L15 25 Q15 40 25 40 Q35 40 35 25 L25 5" fill="rgba(0, 240, 255, 0.2)" />
     </svg>
   ),
   bread: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <rect x="10" y="15" width="30" height="25" rx="5" fill="#D96B32" stroke="#1C1C1C" strokeWidth="3" />
-      <path d="M10 20 Q25 10 40 20" fill="none" stroke="#1C1C1C" strokeWidth="3" />
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <path d="M10 35 L10 20 Q10 10 25 10 Q40 10 40 20 L40 35 Z" fill="rgba(0, 240, 255, 0.2)" />
+      <line x1="15" y1="20" x2="35" y2="20" />
+      <line x1="15" y1="28" x2="35" y2="28" />
     </svg>
   ),
   banana: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <path d="M10 10 Q40 10 40 40" fill="none" stroke="#FFD447" strokeWidth="6" strokeLinecap="round" />
-      <path d="M10 10 Q40 10 40 40" fill="none" stroke="#1C1C1C" strokeWidth="1" />
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <path d="M15 10 Q40 10 40 35" strokeWidth="4" />
     </svg>
   ),
   milk: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <rect x="12" y="10" width="26" height="32" fill="#FFFFFF" stroke="#1C1C1C" strokeWidth="3" />
-      <path d="M12 20 L38 20" stroke="#1C1C1C" strokeWidth="2" />
-      <text x="25" y="32" textAnchor="middle" fontSize="8" fontWeight="bold">SUSU</text>
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <rect x="15" y="10" width="20" height="30" />
+      <path d="M15 20 L35 20" />
     </svg>
   ),
   book: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <rect x="10" y="10" width="30" height="35" rx="2" fill="#1F63C7" stroke="#1C1C1C" strokeWidth="3" />
-      <line x1="15" y1="18" x2="35" y2="18" stroke="#FFFFFF" strokeWidth="2" />
-      <line x1="15" y1="25" x2="35" y2="25" stroke="#FFFFFF" strokeWidth="2" />
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <path d="M10 10 L40 10 L40 40 L10 40 Z M15 15 L35 15 M15 22 L35 22 M15 29 L35 29" />
     </svg>
   ),
   toy: () => (
-    <svg width="50" height="50" viewBox="0 0 50 50">
-      <circle cx="25" cy="20" r="12" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
-      <circle cx="25" cy="40" r="8" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <circle cx="25" cy="18" r="8" />
+      <rect x="15" y="28" width="20" height="12" rx="2" />
+      <line x1="20" y1="28" x2="20" y2="22" />
+      <line x1="30" y1="28" x2="30" y2="22" />
     </svg>
   ),
-  look_money: () => <Coins size={32} />,
-  look_price: () => <BookOpen size={32} />,
-  choose_item: () => <ShoppingBasket size={32} />,
-  calculate: () => <Star size={32} />,
-  check_balance: () => <Brain size={32} />,
+  candy: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="50" height="50">
+      <rect x="15" y="15" width="20" height="20" transform="rotate(45 25 25)" />
+      <path d="M10 25 L18 25 M32 25 L40 25" />
+    </svg>
+  ),
+  faham: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="40" height="40">
+      <circle cx="25" cy="25" r="20" />
+      <circle cx="18" cy="20" r="2" fill="currentColor" />
+      <circle cx="32" cy="20" r="2" fill="currentColor" />
+      <path d="M15 30 Q25 40 35 30" />
+    </svg>
+  ),
+  hampir: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="40" height="40">
+      <circle cx="25" cy="25" r="20" />
+      <circle cx="18" cy="20" r="2" fill="currentColor" />
+      <circle cx="32" cy="20" r="2" fill="currentColor" />
+      <line x1="15" y1="32" x2="35" y2="32" />
+    </svg>
+  ),
+  bantuan: () => (
+    <svg viewBox="0 0 50 50" className="svg-icon" width="40" height="40">
+      <circle cx="25" cy="25" r="20" />
+      <circle cx="18" cy="20" r="2" fill="currentColor" />
+      <circle cx="32" cy="20" r="2" fill="currentColor" />
+      <path d="M15 35 Q25 25 35 35" />
+    </svg>
+  ),
+  look_money: () => <Shield size={32} />,
+  look_price: () => <Search size={32} />,
+  choose_item: () => <Target size={32} />,
+  calculate: () => <Zap size={32} />,
+  check_balance: () => <Info size={32} />,
   pay: () => <ArrowRight size={32} />,
+  save_balance: () => <Shield size={32} />,
 };
 
-function DidiDuit({ className = "" }) {
+function Panel({ children, className = "" }) {
   return (
-    <div className={`didi-duit bounce ${className}`} style={{
-      width: '100px', height: '100px', background: 'var(--coin)',
-      border: '6px solid var(--outline)', borderRadius: '50%',
-      position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: 'inset -6px -6px 0 rgba(0,0,0,0.1)'
-    }}>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <div style={{ width: '10px', height: '10px', background: 'var(--outline)', borderRadius: '50%' }}></div>
-        <div style={{ width: '10px', height: '10px', background: 'var(--outline)', borderRadius: '50%' }}></div>
-      </div>
-      <div style={{
-        position: 'absolute', bottom: '25%', width: '30px', height: '15px',
-        borderBottom: '4px solid var(--outline)', borderRadius: '50%'
-      }}></div>
+    <div className={`panel ${className}`}>
+      {children}
+      <div className="panel-corner-bl" />
+      <div className="panel-corner-br" />
     </div>
   );
 }
 
-function AudioButton({ text, soundOn, speaking, setSpeaking }) {
-  return (
-    <button
-      className={`iconBtn ${speaking ? 'speaking' : ''}`}
-      onClick={() => speak(text, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
-      aria-label="Dengar arahan"
-    >
-      <Volume2 size={20} /> Dengar Arahan
-    </button>
-  );
-}
+// --- SCENES ---
 
-function StarRating({ label, value }) {
+const TitleScreen = ({ setPage, soundOn }) => {
+  const intro = "Selamat datang ke Akademi Agen RM5. Misi Kedai Mini: Pilih, Kira, Bayar dengan Bijak!";
   return (
-    <div className="star-line" aria-label={`${label}: ${value} bintang`}>
-      <span style={{fontWeight: '900'}}>{label}</span>
-      <span className="star-group">{'★'.repeat(value)}{'☆'.repeat(3 - value)}</span>
-    </div>
-  );
-}
-
-function Header({ page, setPage, soundOn, setSoundOn, textLevel, setTextLevel, reduceMotion, setReduceMotion }) {
-  return (
-    <header className="topbar">
-      <button className="homeBtn" onClick={() => setPage('home')}><Home size={18} /> Utama</button>
-      <div className="brand">
-        <div style={{width: '40px', height: '40px', background: 'var(--coin)', border: '3px solid var(--outline)', borderRadius: '50%', display: 'grid', placeItems: 'center', fontWeight: '900'}}>RM5</div>
+    <main className="screen">
+      <div className="grid-2" style={{ alignItems: 'center' }}>
         <div>
-          <strong>DUNIA SYILING RM5</strong>
-          <small>Misi Kedai Mini: Pilih, Kira, Bayar!</small>
-        </div>
-      </div>
-      <div className="tools">
-        <button className="miniBtn" onClick={() => setSoundOn(!soundOn)}>{soundOn ? <Volume2 size={17}/> : <VolumeX size={17}/>} Audio</button>
-        <button className="miniBtn" onClick={() => setTextLevel((textLevel + 1) % 3)}>Teks</button>
-        <button className="miniBtn" onClick={() => setReduceMotion(!reduceMotion)}>Gerak</button>
-      </div>
-    </header>
-  );
-}
-
-function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
-  const intro = 'Selamat datang ke Dunia Syiling RM5! Mari belajar cara memilih barang, mengira wang, dan membuat keputusan bijak.';
-  return (
-    <main>
-      <section className="heroCard castlePanel">
-        <div className="heroText">
-          <div className="badge-label">DUNIA 1: Pintu Masuk</div>
-          <h1>Selamat Datang ke Dunia Syiling RM5!</h1>
-          <p style={{fontSize: '1.2rem', fontWeight: '900', marginBottom: '20px'}}>Misi Kedai Mini: Pilih, Kira, Bayar!</p>
-          <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-            <button className="primaryBtn brick-style" onClick={() => setPage('intro')}><Sparkles size={20}/> Mulakan Misi</button>
-            <AudioButton text={intro} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
-          </div>
-        </div>
-        <DidiDuit />
-      </section>
-
-      <section className="objectiveGrid">
-        <button className="level-card" onClick={() => setPage('money')}>
-          <div className="lvl-icon"><Coins size={30} /></div>
-          <span>Kenali RM5</span>
-        </button>
-        <button className="level-card" onClick={() => setPage('flow')}>
-          <div className="lvl-icon"><Map size={30} /></div>
-          <span>Peta Alir</span>
-        </button>
-        <button className="level-card" onClick={() => setPage('shop')}>
-          <div className="lvl-icon"><ShoppingBasket size={30} /></div>
-          <span>Misi Kedai</span>
-        </button>
-        <button className="level-card" onClick={() => setPage('wise')}>
-          <div className="lvl-icon"><Brain size={30} /></div>
-          <span>Pilihan Bijak</span>
-        </button>
-        <button className="level-card" onClick={() => setPage('teacher')}>
-          <div className="lvl-icon"><BookOpen size={30} /></div>
-          <span>Panduan Guru</span>
-        </button>
-      </section>
-
-      <section className="progressBox">
-        <h2>Lencana Saya</h2>
-        <div className="badge-row">
-          {progress.badges.length ? progress.badges.map(b => (
-            <button
-              key={b}
-              className="medal bounce"
-              onClick={() => speak(`Tahniah! Anda mendapat ${b}`, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
-              title={b}
-              aria-label={`Lencana: ${b}`}
-            >
-              {b.includes('Wang') && <Coins size={40} />}
-              {b.includes('Peta Alir') && <Map size={40} />}
-              {b.includes('Pembeli Bijak') && <ShoppingBasket size={40} />}
-              {b.includes('Carta Bijak') && <Brain size={40} />}
-              {b.includes('Juara') && <Trophy size={40} />}
-              <small style={{display: 'block', fontSize: '0.7rem', marginTop: '5px'}}>{b}</small>
+          <h1 className="neon-text flicker" style={{ fontSize: '3rem' }}>Akademi Agen RM5</h1>
+          <p className="pulse" style={{ fontSize: '1.2rem', color: 'var(--electric-blue)', fontWeight: 'bold', marginBottom: '30px' }}>
+            MISI KEDAI MINI: PILIH, KIRA, BAYAR DENGAN BIJAK!
+          </p>
+          <div style={{ display: 'flex', gap: '20px' }}>
+            <button className="primaryBtn" onClick={() => setPage('briefing')}>
+              <Zap /> Mulakan Misi
             </button>
-          )) : <p className="muted">Belum ada lencana. Mari mula misi.</p>}
+            <button className="miniBtn" onClick={() => speak(intro, soundOn)} style={{ padding: '15px' }}>
+              <Volume2 /> Dengar Arahan
+            </button>
+          </div>
+          <button className="homeBtn" onClick={() => setPage('teacher')} style={{ marginTop: '40px', border: 'none', textDecoration: 'underline' }}>
+            Panduan Guru
+          </button>
         </div>
-      </section>
+        <AgentBijak size="large" />
+      </div>
     </main>
   );
-}
+};
 
-function IntroScreen({ setPage, soundOn, speaking, setSpeaking }) {
-  const text = 'Kamu ada RM5. Tugas kamu ialah memilih barang yang sesuai. Pastikan wang cukup dan kira baki.';
+const BriefingScene = ({ setPage, soundOn }) => {
+  const text = "Kamu ada RM5. Pilih barang yang sesuai. Pastikan wang kamu cukup. Kira baki wang. Buat pilihan bijak.";
   return (
-    <main>
-      <section className="missionCard brick-panel">
-        <div className="badge-label" style={{background: 'var(--white)', color: 'var(--outline)'}}>Pengenalan</div>
-        <h1 style={{color: 'var(--coin)'}}>Hai Pembeli Bijak!</h1>
-        <p style={{fontSize: '1.3rem', fontWeight: '900'}}>Kamu ada <strong className="price-tag">RM5</strong>. Mari belajar cara membeli barang dengan bijak.</p>
-
-        <div className="wooden-sign" style={{margin: '30px 0'}}>
-          <h2 style={{marginTop: 0}}>Contoh Mudah:</h2>
-          <p>Roti = RM2</p>
-          <p>Air Mineral = RM1</p>
-          <hr style={{borderColor: 'rgba(255,255,255,0.2)'}} />
-          <p><strong>Jumlah:</strong> RM2 + RM1 = RM3</p>
-          <p><strong>Baki:</strong> RM5 - RM3 = RM2</p>
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Arahan Misi</h2>
+        <div style={{ fontSize: '1.5rem', lineHeight: '2', margin: '30px 0' }}>
+          <div className="flicker">➜ Kamu ada <span style={{ color: 'var(--agent-gold)' }}>RM5</span>.</div>
+          <div>➜ Pilih barang yang sesuai.</div>
+          <div>➜ Pastikan wang kamu cukup.</div>
+          <div>➜ Kira baki wang.</div>
+          <div>➜ Buat pilihan bijak.</div>
         </div>
-
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-          <button className="primaryBtn" onClick={() => setPage('money')}>Seterusnya: Kenali RM5 <ArrowRight /></button>
-          <AudioButton text={text} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
+        <div style={{ display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" onClick={() => setPage('money')}>
+            <CheckCircle /> Scan Complete: Seterusnya
+          </button>
+          <button className="miniBtn" onClick={() => speak(text, soundOn)}>
+            <Volume2 /> Dengar Arahan
+          </button>
         </div>
-      </section>
+      </Panel>
+      <div className="briefing-overlay" />
     </main>
   );
-}
+};
 
-function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
-  const [chosen, setChosen] = useState(null);
-  const correct = chosen === 'rm5';
-  function award() {
-    setProgress(prev => {
-      const badges = prev.badges.includes('Lencana Wang') ? prev.badges : [...prev.badges, 'Lencana Wang'];
-      return { ...prev, badges };
-    });
-  }
-  useEffect(() => { if (correct) award(); }, [correct]);
+const MoneyScene = ({ setPage, soundOn, addBadge }) => {
+  const [selected, setSelected] = useState(null);
+  const isCorrect = selected === 'rm5';
+
+  useEffect(() => {
+    if (isCorrect) addBadge('Lencana Agen Wang');
+  }, [isCorrect]);
 
   return (
-    <main>
-      <section className="missionCard">
-        <div className="badge-label">TAHAP 1</div>
-        <h1>Kenali RM5</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Klik wang yang bernilai <strong>RM5</strong>.</p>
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Kenali Wang</h2>
+        <p style={{ fontSize: '1.2rem' }}>Klik wang yang bernilai <span className="neon-text">RM5</span>.</p>
 
-        <div className="moneyGrid">
+        <div className="grid-3" style={{ margin: '30px 0' }}>
           {moneyChoices.map(m => (
-            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''}`} onClick={() => setChosen(m.id)}>
-              <div className="coin-block" style={{background: m.id === 'rm5' ? 'var(--coin)' : '#ccc'}}>
-                {Icons[m.type]()}
+            <div
+              key={m.id}
+              className={`money-card ${selected === m.id ? 'selected' : ''}`}
+              onClick={() => setSelected(m.id)}
+            >
+              <div style={{ margin: '10px 0' }}>{Icons[m.type]()}</div>
+              <div style={{ fontFamily: 'var(--font-heading)', fontSize: '1.2rem' }}>{m.label}</div>
+              {m.highlight && <div style={{ color: 'var(--agent-gold)', fontSize: '0.7rem' }}>Hologram Active</div>}
+            </div>
+          ))}
+        </div>
+
+        {selected && (
+          <div className={`feedback-box ${isCorrect ? 'feedback-success' : 'feedback-error'}`}>
+            {isCorrect ? 'Hebat! Ini RM5 untuk misi hari ini.' : 'Cuba lagi. Cari wang yang tertulis RM5.'}
+          </div>
+        )}
+
+        <div style={{ marginTop: '30px', display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" disabled={!isCorrect} onClick={() => setPage('flow')}>
+            Teruskan <ArrowRight />
+          </button>
+          <button className="miniBtn" onClick={() => speak("Klik wang yang bernilai RM5.", soundOn)}>
+            <Volume2 /> Dengar Arahan
+          </button>
+        </div>
+      </Panel>
+    </main>
+  );
+};
+
+const FlowScene = ({ setPage, soundOn, addBadge }) => {
+  const [activeNodes, setActiveNodes] = useState([]);
+  const isComplete = activeNodes.length === flowSteps.length;
+
+  const toggleNode = (id) => {
+    if (activeNodes.includes(id)) return;
+    if (id === activeNodes.length + 1) {
+      setActiveNodes([...activeNodes, id]);
+    }
+  };
+
+  useEffect(() => {
+    if (isComplete) addBadge('Lencana Peta Alir');
+  }, [isComplete]);
+
+  return (
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Peta Alir Agen</h2>
+        <p>Aktifkan semua nod mengikut urutan misi.</p>
+
+        <div className="flow-container" style={{ margin: '30px 0' }}>
+          {flowSteps.map(step => (
+            <div
+              key={step.id}
+              className={`flow-node ${activeNodes.includes(step.id) ? 'active' : ''}`}
+              onClick={() => toggleNode(step.id)}
+            >
+              <div className="node-number">{step.id}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                {Icons[step.type]()}
+                <span style={{ fontWeight: 'bold' }}>{step.title}</span>
               </div>
-              <strong style={{fontSize: '1.5rem'}}>{m.label}</strong>
+              {activeNodes.includes(step.id) && <CheckCircle size={20} color="var(--success-green)" style={{ marginLeft: 'auto' }} />}
+            </div>
+          ))}
+        </div>
+
+        {isComplete && (
+          <div className="feedback-box feedback-success" style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <AgentBijak size="small" badge={false} />
+            <span>Modul Selesai! Kamu sudah bersedia untuk ke kedai.</span>
+          </div>
+        )}
+
+        <div style={{ marginTop: '30px', display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" disabled={!isComplete} onClick={() => setPage('shop')}>
+            Ke Kedai <ArrowRight />
+          </button>
+          <button className="miniBtn" onClick={() => speak("Tekan setiap langkah mengikut urutan.", soundOn)}>
+            <Volume2 /> Dengar Arahan
+          </button>
+        </div>
+      </Panel>
+    </main>
+  );
+};
+
+const ShopScene = ({ setPage, soundOn, addBadge, progress, setProgress }) => {
+  const [basket, setBasket] = useState(progress.items || []);
+  const total = basket.reduce((sum, id) => sum + (items.find(i => i.id === id)?.price || 0), 0);
+  const balance = BUDGET - total;
+
+  const hasKeperluan = basket.some(id => items.find(i => i.id === id)?.category === 'KEPERLUAN');
+  const isTooExpensive = total > BUDGET;
+  const isOnlyKehendak = basket.length > 0 && !hasKeperluan;
+  const isValid = basket.length > 0 && !isTooExpensive;
+
+  const toggleItem = (id) => {
+    const next = basket.includes(id) ? basket.filter(x => x !== id) : [...basket, id];
+    setBasket(next);
+    setProgress({ ...progress, items: next });
+  };
+
+  useEffect(() => {
+    if (isValid && hasKeperluan) addBadge('Lencana Pembeli Bijak');
+  }, [isValid, hasKeperluan]);
+
+  return (
+    <main className="screen">
+      <div className="grid-2">
+        <Panel>
+          <h2 className="neon-text">Holographic Shop</h2>
+          <div className="grid-3" style={{ gap: '15px' }}>
+            {items.map(item => (
+              <div
+                key={item.id}
+                className={`item-card ${basket.includes(item.id) ? 'selected' : ''}`}
+                onClick={() => toggleItem(item.id)}
+                style={{ border: basket.includes(item.id) ? '2px solid var(--neon-cyan)' : '1px solid var(--electric-blue)' }}
+              >
+                {Icons[item.type]()}
+                <div style={{ fontWeight: 'bold', fontSize: '0.9rem', margin: '5px 0' }}>{item.name}</div>
+                <div className="neon-text" style={{ fontWeight: 'bold' }}>RM{item.price}</div>
+                <div className={`cat-badge ${item.category === 'KEPERLUAN' ? 'cat-need' : 'cat-want'}`}>
+                  {item.category}
+                </div>
+              </div>
+            ))}
+          </div>
+        </Panel>
+
+        <Panel>
+          <h2 className="neon-text">Bakul Agen</h2>
+          <div style={{ minHeight: '150px' }}>
+            {basket.length === 0 ? <p style={{ color: 'var(--electric-blue)' }}>Pilih barang misi...</p> : (
+              basket.map(id => {
+                const item = items.find(i => i.id === id);
+                return (
+                  <div key={id} style={{ display: 'flex', justifyContent: 'space-between', padding: '5px 0', borderBottom: '1px solid rgba(0,240,255,0.1)' }}>
+                    <span>{item.name}</span>
+                    <span className="neon-text">RM{item.price}</span>
+                  </div>
+                );
+              })
+            )}
+          </div>
+
+          <div className="dashboard">
+            <div className="stat-box">
+              <div className="stat-label">Budget</div>
+              <div className="stat-value">RM{BUDGET}</div>
+            </div>
+            <div className="stat-box">
+              <div className="stat-label">Jumlah</div>
+              <div className="stat-value" style={{ color: isTooExpensive ? 'var(--alert-red)' : 'var(--neon-cyan)' }}>RM{total}</div>
+            </div>
+            <div className="stat-box">
+              <div className="stat-label">Baki</div>
+              <div className="stat-value">RM{balance}</div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '20px' }}>
+            {isTooExpensive && <div className="feedback-box feedback-error"><AlertTriangle size={16}/> Wang tidak cukup. Pilih semula.</div>}
+            {isOnlyKehendak && <div className="feedback-box feedback-error">Wang cukup, tetapi cuba pilih barang yang lebih diperlukan.</div>}
+            {isValid && hasKeperluan && <div className="feedback-box feedback-success"><CheckCircle size={16}/> Pilihan bijak! Wang cukup dan barang sesuai.</div>}
+          </div>
+
+          <div style={{ marginTop: '30px', display: 'flex', gap: '10px' }}>
+            <button className="primaryBtn" disabled={!isValid || isOnlyKehendak} onClick={() => setPage('challenge1')}>
+              Confirm <ArrowRight />
+            </button>
+            <button className="miniBtn" onClick={() => speak("Pilih barang keperluan. Pastikan wang cukup.", soundOn)}>
+              <Volume2 />
+            </button>
+          </div>
+        </Panel>
+      </div>
+    </main>
+  );
+};
+
+const Challenge1Scene = ({ setPage, soundOn }) => {
+  const [selected, setSelected] = useState(null);
+  const correct = selected !== null && challenge1.options[selected].correct;
+
+  return (
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Cabaran 1: Cukup atau Tidak?</h2>
+        <div className="flicker" style={{ fontSize: '1.5rem', margin: '30px 0' }}>{challenge1.question}</div>
+
+        <div style={{ display: 'flex', gap: '20px' }}>
+          {challenge1.options.map((opt, i) => (
+            <button
+              key={i}
+              className={`primaryBtn ${selected === i ? 'selected' : ''}`}
+              onClick={() => setSelected(i)}
+              style={{ flex: 1, border: selected === i ? '2px solid var(--neon-cyan)' : '' }}
+            >
+              {opt.label}
             </button>
           ))}
         </div>
 
-        {chosen && (
-          <div className={`toast ${correct ? 'success' : 'error'}`} aria-live="polite">
-            {correct ? 'Hebat! Ini RM5 untuk misi hari ini.' : 'Cuba lagi. Cari wang yang tertulis RM5.'}
+        {selected !== null && (
+          <div className={`feedback-box ${correct ? 'feedback-success' : 'feedback-error'}`}>
+            {challenge1.options[selected].feedback}
           </div>
         )}
 
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!correct} onClick={() => setPage('flow')}>Seterusnya: Peta Alir <ArrowRight /></button>
-          <AudioButton text="Klik wang yang bernilai RM5. Lihat simbol dan nombor pada wang." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
+        <div style={{ marginTop: '30px', display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" disabled={!correct} onClick={() => setPage('challenge2')}>
+            Misi Seterusnya <ArrowRight />
+          </button>
+          <button className="miniBtn" onClick={() => speak(challenge1.question, soundOn)}>
+            <Volume2 />
+          </button>
         </div>
-      </section>
+      </Panel>
     </main>
   );
-}
+};
 
-function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
-  const [done, setDone] = useState([]);
-  const complete = done.length === flowSteps.length;
+// --- SCENES 7-12 ---
 
-  useEffect(() => {
-    if (complete) {
-      setProgress(prev => {
-        const badges = prev.badges.includes('Lencana Peta Alir') ? prev.badges : [...prev.badges, 'Lencana Peta Alir'];
-        return { ...prev, badges };
-      });
-    }
-  }, [complete, setProgress]);
+const Challenge2Scene = ({ setPage, soundOn, progress, setProgress }) => {
+  const [selected, setSelected] = useState(null);
+  const [reason, setReason] = useState(progress.reason1 || "");
+
+  const handleNext = () => {
+    setProgress({ ...progress, reason1: reason });
+    setPage('radar');
+  };
 
   return (
-    <main>
-      <section className="missionCard">
-        <div className="badge-label">TAHAP 2</div>
-        <h1>Peta Alir Pembeli Bijak</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Tekan setiap langkah mengikut urutan (1 hingga 6).</p>
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Cabaran 2: Pilihan Agen Bijak</h2>
+        <p style={{ fontSize: '1.5rem', margin: '20px 0' }}>{challenge2.question}</p>
 
-        <div className="flowPath">
-          {flowSteps.map((s, idx) => {
-            const isActive = done.includes(idx);
-            return (
-              <div key={s.title} style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
-                <button
-                  className={`stepping-stone ${isActive ? 'active' : ''}`}
-                  onClick={() => {
-                    if (idx === done.length) setDone(prev => [...prev, idx]);
-                  }}
-                >
-                  <div className="step-num">{idx + 1}</div>
-                  <div style={{margin: '10px 0'}}>{Icons[s.type]()}</div>
-                  <div style={{fontSize: '0.9rem'}}>{s.title}</div>
-                </button>
-                {idx < flowSteps.length - 1 && <ArrowRight size={30} color="var(--outline)" />}
-              </div>
-            );
-          })}
-        </div>
-
-        {complete && (
-          <div className="toast success" aria-live="polite">
-            <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px'}}>
-              <DidiDuit />
-              <span>Level Clear! Kamu sudah ikut peta alir dengan betul.</span>
-            </div>
-          </div>
-        )}
-
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!complete} onClick={() => setPage('shop')}>Seterusnya: Misi Kedai <ArrowRight /></button>
-          <AudioButton text="Peta alir membantu kita menyusun langkah membeli barang. Tekan langkah satu hingga enam." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
-        </div>
-      </section>
-    </main>
-  );
-}
-function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
-  const [basket, setBasket] = useState([]);
-  const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
-  const balance = BUDGET - total;
-  const valid = total > 0 && total <= BUDGET;
-  const hasNeed = basket.some(id => items.find(i => i.id === id).tag === 'KEPERLUAN');
-  const excellent = valid && hasNeed;
-
-  function toggleItem(id) {
-    setBasket(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
-  }
-
-  useEffect(() => {
-    if (excellent) {
-      setProgress(prev => {
-        const badges = prev.badges.includes('Pembeli Bijak') ? prev.badges : [...prev.badges, 'Pembeli Bijak'];
-        return { ...prev, badges };
-      });
-    }
-  }, [excellent, setProgress]);
-
-  return (
-    <main>
-      <section className="missionCard">
-        <div className="badge-label">TAHAP 3</div>
-        <h1>Kedai Mini Ajaib</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Kamu ada <strong className="price-tag">RM5</strong>. Pilih barang keperluan dahulu.</p>
-
-        <div className="shopLayout">
-          <div className="itemGrid">
-            {items.map(item => (
-              <button key={item.id} className={`platform-card ${basket.includes(item.id) ? 'selected' : ''}`} onClick={() => toggleItem(item.id)}>
-                <div style={{background: 'var(--cream)', borderRadius: '50%', padding: '10px', border: '3px solid var(--outline)'}}>
-                  {Icons[item.type]()}
-                </div>
-                <strong>{item.name}</strong>
-                <span className="price-tag">RM{item.price}</span>
-                <small style={{fontWeight: '900', color: item.tag === 'KEPERLUAN' ? 'var(--grass)' : 'var(--red)'}}>{item.tag}</small>
-              </button>
-            ))}
-          </div>
-
-          <aside className="wooden-sign">
-            <h2 style={{marginTop: 0}}>Troli Saya 🛒</h2>
-            {basket.length === 0 ? <p>Pilih barang...</p> : basket.map(id => {
-              const item = items.find(i => i.id === id);
-              return <div key={id} style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
-                <span>{item.name}</span>
-                <span>RM{item.price}</span>
-              </div>
-            })}
-            <hr style={{borderColor: 'rgba(255,255,255,0.3)'}} />
-            <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: '900'}}>
-              <span>Jumlah:</span>
-              <span>RM{total}</span>
-            </div>
-            <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: '900', color: balance < 0 ? 'var(--red)' : 'var(--coin)'}}>
-              <span>Baki:</span>
-              <span>RM{balance}</span>
-            </div>
-
-            <div style={{marginTop: '20px'}} aria-live="polite">
-              {total > BUDGET && <div className="toast error" style={{fontSize: '0.9rem', padding: '10px'}}>Wang tidak cukup!</div>}
-              {valid && !hasNeed && <div className="toast error" style={{fontSize: '0.9rem', padding: '10px'}}>Pilih barang keperluan.</div>}
-              {excellent && <div className="toast success" style={{fontSize: '0.9rem', padding: '10px', color: 'var(--outline)'}}>Bijak! Wang cukup.</div>}
-            </div>
-          </aside>
-        </div>
-
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!excellent} onClick={() => setPage('wise')}>Seterusnya: Pilihan Bijak <ArrowRight /></button>
-          <AudioButton text="Pilih barang. Pastikan jumlah tidak lebih daripada RM5. Utamakan barang keperluan." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function WiseChoiceScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
-  const [activeIdx, setActiveIdx] = useState(0);
-  const [reason, setReason] = useState("");
-  const active = items[activeIdx];
-
-  useEffect(() => {
-    setProgress(prev => {
-      const badges = prev.badges.includes('Lencana Carta Bijak') ? prev.badges : [...prev.badges, 'Lencana Carta Bijak'];
-      return { ...prev, badges };
-    });
-  }, [setProgress]);
-
-  return (
-    <main>
-      <section className="missionCard">
-        <div className="badge-label">TAHAP 4</div>
-        <h1>Carta Bijak</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Bandingkan barang menggunakan bintang.</p>
-
-        <div className="wiseLayout">
-          <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px'}}>
-            {items.map((item, idx) => (
-              <button key={item.id} className={`platform-card ${activeIdx === idx ? 'selected' : ''}`} onClick={() => setActiveIdx(idx)}>
-                {Icons[item.type]()}
-                <small>{item.name}</small>
-              </button>
-            ))}
-          </div>
-
-          <div className="radarCard" style={{background: 'var(--cream)', position: 'relative', overflow: 'hidden'}}>
-            <div style={{textAlign: 'center', marginBottom: '20px'}}>
-              <div className="bounce" style={{display: 'inline-block'}}>{Icons[active.type]()}</div>
-              <h2 style={{margin: '10px 0'}}>{active.name}</h2>
-              <span className="price-tag">RM{active.price}</span>
-            </div>
-
-            <StarRating label="Harga Sesuai" value={active.price <= 2 ? 3 : active.price <= 4 ? 2 : 1} />
-            <StarRating label="Diperlukan" value={active.need} />
-            <StarRating label="Baik untuk Diri" value={active.good} />
-
-            <div className="wooden-sign" style={{marginTop: '20px', fontSize: '0.9rem'}}>
-              <strong>Soalan Bijak:</strong>
-              <p>Adakah ini pilihan bijak? Mengapa?</p>
-              <textarea
-                className="reason-input"
-                placeholder={`Saya pilih ${active.name} kerana...`}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                style={{
-                  width: '100%', minHeight: '80px', borderRadius: '8px',
-                  padding: '10px', border: '3px solid var(--outline)',
-                  fontFamily: 'inherit', fontWeight: 'bold'
-                }}
-              />
-            </div>
-          </div>
-        </div>
-
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" onClick={() => setPage('quiz')}>Seterusnya: Kuiz <ArrowRight /></button>
-          <AudioButton text="Gunakan carta bijak untuk menilai barang. Lihat bintang untuk harga, keperluan, dan manfaat." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
-        </div>
-      </section>
-    </main>
-  );
-}
-
-function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
-  const [answers, setAnswers] = useState({});
-  const answered = Object.keys(answers).length;
-  const score = quiz.reduce((sum, q, idx) => sum + (answers[idx] === q.answer ? 1 : 0), 0);
-  const complete = answered === quiz.length;
-
-  useEffect(() => {
-    if (complete && score >= 4) {
-      setProgress(prev => {
-        const badges = prev.badges.includes('Juara Dunia Syiling RM5') ? prev.badges : [...prev.badges, 'Juara Dunia Syiling RM5'];
-        return { ...prev, badges, quizScore: score };
-      });
-    }
-  }, [complete, score, setProgress]);
-
-  return (
-    <main>
-      <section className="missionCard">
-        <div className="badge-label">TAHAP 5</div>
-        <h1>Kuiz Pengukuhan</h1>
-
-        <div className="quizGrid">
-          {quiz.map((q, idx) => (
-            <div key={idx} className="quizCard brick-panel" style={{color: 'var(--outline)', background: 'var(--white)'}}>
-              <h2 style={{fontSize: '1.2rem'}}>{idx + 1}. {q.q}</h2>
-              <div style={{display: 'grid', gap: '10px', marginTop: '15px'}}>
-                {q.options.map((opt, optIdx) => (
-                  <button
-                    key={optIdx}
-                    className={`platform-card ${answers[idx] === optIdx ? 'selected' : ''}`}
-                    onClick={() => setAnswers(prev => ({...prev, [idx]: optIdx}))}
-                    style={{flexDirection: 'row', justifyContent: 'flex-start', padding: '12px 20px'}}
-                  >
-                    <div style={{width: '30px', height: '30px', background: 'var(--outline)', color: 'var(--white)', borderRadius: '50%', display: 'grid', placeItems: 'center', marginRight: '15px'}}>{optIdx + 1}</div>
-                    {opt}
-                  </button>
-                ))}
-              </div>
-              {answers[idx] !== undefined && (
-                <div className={`toast ${answers[idx] === q.answer ? 'success' : 'error'}`} style={{fontSize: '0.9rem', marginTop: '15px', padding: '10px'}}>
-                  {answers[idx] === q.answer ? 'Betul! ' : 'Salah. '} {q.explain}
-                </div>
-              )}
+        <div className="grid-3" style={{ marginBottom: '30px' }}>
+          {challenge2.options.map((opt, i) => (
+            <div
+              key={opt.id}
+              className={`money-card ${selected === i ? 'selected' : ''}`}
+              onClick={() => setSelected(i)}
+            >
+              <div style={{ fontWeight: 'bold' }}>Opsyen {opt.id}</div>
+              <div style={{ fontSize: '0.9rem', margin: '10px 0' }}>{opt.label}</div>
+              <div style={{ fontSize: '0.7rem', color: 'var(--electric-blue)' }}>{opt.description}</div>
             </div>
           ))}
         </div>
 
-        {complete && (
-          <div className="toast success" style={{fontSize: '1.5rem', marginBottom: '30px'}}>
-            <Trophy size={40} /> Skor Anda: {score} / {quiz.length}
+        {selected !== null && (
+          <div style={{ marginTop: '20px' }}>
+            <p>Saya pilih <span className="neon-text">{challenge2.options[selected].label}</span> kerana:</p>
+            <textarea
+              className="panel"
+              style={{ width: '100%', minHeight: '80px', color: 'white', fontFamily: 'inherit', padding: '15px' }}
+              placeholder={`Saya pilih ${challenge2.options[selected].label} kerana...`}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
           </div>
         )}
 
-        <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-          <button className="primaryBtn" disabled={!complete} onClick={() => setPage('finish')}>Tamat Misi <ArrowRight /></button>
-          <AudioButton text="Jawab semua soalan kuiz. Pilih jawapan yang paling bijak." soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
+        <div style={{ marginTop: '30px', display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" disabled={selected === null || !reason} onClick={handleNext}>
+            Hantar <ArrowRight />
+          </button>
+          <button className="miniBtn" onClick={() => speak(challenge2.question, soundOn)}>
+            <Volume2 />
+          </button>
         </div>
-      </section>
+      </Panel>
     </main>
   );
-}
+};
 
-function FinishScreen({ setPage, progress, soundOn, setSpeaking }) {
+const RadarScene = ({ setPage, soundOn, addBadge, progress, setProgress }) => {
+  const basketItems = progress.items.length > 0 ? progress.items : ['water', 'bread'];
+  const [activeIdx, setActiveIdx] = useState(0);
+  const [reason, setReason] = useState(progress.reason2 || "");
+  const currentItem = items.find(i => i.id === basketItems[activeIdx]);
+
+  useEffect(() => {
+    addBadge('Lencana Carta Bijak');
+  }, []);
+
+  const handleNext = () => {
+    setProgress({ ...progress, reason2: reason });
+    setPage('challenge3');
+  };
+
   return (
-    <main>
-      <div className="castle-container">
-        <div className="flag-pole">
-          <div className="flag"></div>
-        </div>
-        <div style={{background: '#888', width: '200px', height: '150px', margin: '0 auto', border: '6px solid var(--outline)', borderRadius: '10px 10px 0 0', position: 'relative'}}>
-           <div style={{position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '60px', height: '80px', background: 'var(--outline)', borderRadius: '30px 30px 0 0'}}></div>
-        </div>
-
-        <div className="badge-label" style={{marginTop: '30px'}}>Istana Pembeli Bijak</div>
-        <h1>TAHNIAH! MISI BERJAYA!</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Kamu telah menjadi Pembeli Bijak di Dunia Syiling RM5.</p>
-
-        <div className="progressBox" style={{marginTop: '40px'}}>
-          <h2>Koleksi Lencana Anda:</h2>
-          <div className="badge-row" style={{justifyContent: 'center'}}>
-            {progress.badges.map(b => (
-              <button
-                key={b}
-                className="medal bounce"
-                onClick={() => speak(`Tahniah! Anda telah memenangi ${b}`, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
-                title={b}
-                style={{width: '120px', height: '120px', flexDirection: 'column'}}
-                aria-label={`Lencana: ${b}`}
-              >
-                {b.includes('Wang') && <Coins size={50} />}
-                {b.includes('Peta Alir') && <Map size={50} />}
-                {b.includes('Pembeli Bijak') && <ShoppingBasket size={50} />}
-                {b.includes('Carta Bijak') && <Brain size={50} />}
-                {b.includes('Juara') && <Trophy size={50} />}
-                <small style={{display: 'block', fontSize: '0.8rem', marginTop: '5px', textAlign: 'center'}}>{b}</small>
+    <main className="screen">
+      <div className="grid-2">
+        <Panel>
+          <h2 className="neon-text">Carta Radar Bijak</h2>
+          <p>Penilaian Holografik Barang</p>
+          <div className="grid-2" style={{ gap: '10px', marginTop: '20px' }}>
+            {basketItems.map((id, i) => (
+              <button key={id} className={`money-card ${activeIdx === i ? 'selected' : ''}`} onClick={() => setActiveIdx(i)}>
+                {items.find(x => x.id === id).name}
               </button>
             ))}
           </div>
-        </div>
+        </Panel>
 
-        <div style={{display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '40px'}}>
-          <button className="primaryBtn" onClick={() => setPage('home')}><Home /> Kembali Ke Mula</button>
-          <button className="secondaryBtn" onClick={() => window.print()}>Simpan PDF</button>
-        </div>
+        <Panel>
+          <div style={{ textAlign: 'center' }}>
+            {Icons[currentItem.type]()}
+            <h3 className="neon-text">{currentItem.name}</h3>
+          </div>
+
+          <div style={{ margin: '20px 0' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span>Harga Sesuai</span>
+              <div className="star-bar">
+                {[1,2,3].map(v => <div key={v} className={`star ${v > (currentItem.price <= 2 ? 3 : currentItem.price <= 4 ? 2 : 1) ? 'empty' : ''}`} />)}
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span>Diperlukan</span>
+              <div className="star-bar">
+                {[1,2,3].map(v => <div key={v} className={`star ${v > currentItem.need ? 'empty' : ''}`} />)}
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '10px' }}>
+              <span>Baik untuk Diri</span>
+              <div className="star-bar">
+                {[1,2,3].map(v => <div key={v} className={`star ${v > currentItem.good ? 'empty' : ''}`} />)}
+              </div>
+            </div>
+          </div>
+
+          <div style={{ marginTop: '20px' }}>
+            <p style={{ fontSize: '0.8rem' }}>Adakah ini pilihan bijak? Mengapa?</p>
+            <textarea
+              className="panel"
+              style={{ width: '100%', minHeight: '60px', color: 'white', fontFamily: 'inherit', padding: '10px', fontSize: '0.9rem' }}
+              placeholder={`Saya pilih ${currentItem.name} kerana...`}
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+            />
+          </div>
+
+          <div style={{ marginTop: '20px' }}>
+            <button className="primaryBtn" style={{ width: '100%' }} onClick={handleNext}>
+              Seterusnya <ArrowRight />
+            </button>
+          </div>
+        </Panel>
       </div>
     </main>
   );
-}
-function TeacherGuide({ setPage }) {
+};
+
+const Challenge3Scene = ({ setPage, soundOn }) => {
+  const [selected, setSelected] = useState(null);
+  const correct = selected !== null && challenge3.options[selected].correct;
+
   return (
-    <main>
-      <section className="teacherGuide wooden-sign" style={{background: '#8B5A2B', color: 'var(--white)', borderRadius: '15px'}}>
-        <div className="badge-label" style={{background: 'var(--white)', color: 'var(--outline)'}}>Panduan Guru / Pensyarah</div>
-        <h1>Rasional Reka Bentuk Digital</h1>
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Cabaran 3: Kira Baki Agen</h2>
+        <div style={{ fontSize: '1.5rem', margin: '30px 0' }}>{challenge3.question}</div>
 
-        <div style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', marginTop: '20px'}}>
-          <div style={{background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '10px'}}>
-            <h2>1. Kesesuaian MBPK</h2>
-            <ul style={{paddingLeft: '20px'}}>
-              <li>Sokongan visual (ikon + teks).</li>
-              <li>Arahan pendek & berulang.</li>
-              <li>Latihan berperingkat (scaffolded).</li>
-              <li>Tiada tekanan masa.</li>
-              <li>Peneguhan positif (Lencana).</li>
-              <li>Sokongan audio (Read-aloud).</li>
-            </ul>
-          </div>
-
-          <div style={{background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '10px'}}>
-            <h2>2. Alat Berfikir</h2>
-            <ul style={{paddingLeft: '20px'}}>
-              <li><strong>Peta Alir:</strong> Membantu murid menyusun langkah membeli secara berurutan.</li>
-              <li><strong>Carta Bijak:</strong> Membantu murid membandingkan barang (Harga, Keperluan, Manfaat).</li>
-              <li><strong>Penyoalan KBAT:</strong> Menggalakkan murid memberi sebab bagi pilihan mereka.</li>
-            </ul>
-          </div>
-
-          <div style={{background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '10px'}}>
-            <h2>3. Kemahiran Belajar</h2>
-            <ul style={{paddingLeft: '20px'}}>
-              <li>Memperoleh maklumat (Mengenal RM5).</li>
-              <li>Mengurus maklumat (Peta Alir).</li>
-              <li>Memproses maklumat (Kiraan harga/baki).</li>
-              <li>Membuat keputusan (Pilihan bijak).</li>
-            </ul>
-          </div>
-
-          <div style={{background: 'rgba(0,0,0,0.2)', padding: '20px', borderRadius: '10px'}}>
-            <h2>4. Elemen KPPB</h2>
-            <ul style={{paddingLeft: '20px'}}>
-              <li><strong>Communication:</strong> Menyatakan pilihan dan sebab.</li>
-              <li><strong>Critical Thinking:</strong> Menilai keperluan vs kehendak.</li>
-              <li><strong>Character:</strong> Tanggungjawab berbelanja.</li>
-            </ul>
-          </div>
+        <div style={{ display: 'flex', gap: '20px' }}>
+          {challenge3.options.map((opt, i) => (
+            <button
+              key={i}
+              className={`primaryBtn ${selected === i ? 'selected' : ''}`}
+              onClick={() => setSelected(i)}
+              style={{ flex: 1 }}
+            >
+              {opt.label}
+            </button>
+          ))}
         </div>
 
-        <button className="primaryBtn" style={{marginTop: '30px'}} onClick={() => setPage('home')}><Home /> Kembali ke Utama</button>
-      </section>
+        {selected !== null && (
+          <div className={`feedback-box ${correct ? 'feedback-success' : 'feedback-error'}`}>
+            {challenge3.options[selected].feedback}
+          </div>
+        )}
+
+        <div style={{ marginTop: '30px', display: 'flex', gap: '20px' }}>
+          <button className="primaryBtn" disabled={!correct} onClick={() => setPage('reflection')}>
+            Selesaikan Misi <ArrowRight />
+          </button>
+          <button className="miniBtn" onClick={() => speak(challenge3.question, soundOn)}>
+            <Volume2 />
+          </button>
+        </div>
+      </Panel>
     </main>
   );
-}
+};
+
+const ReflectionScene = ({ setPage, soundOn, progress, setProgress }) => {
+  const [selected, setSelected] = useState(progress.reflection || null);
+  const options = [
+    { label: 'Saya faham', icon: 'faham', val: 'faham', msg: 'Hebat, agen! Teruskan belajar.' },
+    { label: 'Saya hampir faham', icon: 'hampir', val: 'hampir', msg: 'Bagus! Latihan akan memahirkan anda.' },
+    { label: 'Saya perlukan bantuan', icon: 'bantuan', val: 'bantuan', msg: 'Jangan risau, minta bantuan guru anda.' }
+  ];
+
+  const handleSelect = (val) => {
+    setSelected(val);
+    setProgress({ ...progress, reflection: val });
+  };
+
+  return (
+    <main className="screen">
+      <Panel>
+        <h2 className="neon-text">Refleksi Agen</h2>
+        <p style={{ fontSize: '1.5rem', margin: '30px 0' }}>Saya boleh membeli barang dengan bijak.</p>
+
+        <div style={{ display: 'grid', gap: '20px' }}>
+          {options.map(opt => (
+            <button
+              key={opt.val}
+              className={`primaryBtn ${selected === opt.val ? 'selected' : ''}`}
+              onClick={() => handleSelect(opt.val)}
+              style={{ justifyContent: 'flex-start', paddingLeft: '40px' }}
+            >
+              {Icons[opt.icon]()}
+              <span style={{ marginLeft: '20px' }}>{opt.label}</span>
+            </button>
+          ))}
+        </div>
+
+        {selected && (
+          <div className="feedback-box feedback-success" style={{ marginTop: '20px' }}>
+            {options.find(o => o.val === selected).msg}
+          </div>
+        )}
+
+        <button className="primaryBtn" style={{ marginTop: '30px' }} disabled={!selected} onClick={() => setPage('summary')}>
+          Tamat Misi <ArrowRight />
+        </button>
+      </Panel>
+    </main>
+  );
+};
+
+const SummaryScene = ({ setPage, progress, resetProgress, soundOn }) => {
+  return (
+    <main className="screen">
+      <Panel style={{ textAlign: 'center' }}>
+        <h1 className="neon-text flicker">MISI BERJAYA!</h1>
+        <AgentBijak size="large" />
+        <h2 style={{ color: 'var(--agent-gold)' }}>AGEN BIJAK: {progress.badges.length > 0 ? 'CERTIFIED' : 'TRAINEE'}</h2>
+
+        <div style={{ margin: '30px 0' }}>
+          <p>Sebelum membeli barang, kita perlu melihat wang, melihat harga, memilih barang yang sesuai, dan mengira baki. Agen yang bijak akan berbelanja mengikut keperluan.</p>
+        </div>
+
+        <div className="badge-grid" style={{ justifyContent: 'center', marginBottom: '40px' }}>
+          {progress.badges.map(b => (
+            <div key={b} className="badge-item">
+              <div className="badge-icon">
+                {b.includes('Wang') && <Shield color="var(--agent-gold)" />}
+                {b.includes('Peta Alir') && <ShoppingCart color="var(--agent-gold)" />}
+                {b.includes('Pembeli') && <Target color="var(--agent-gold)" />}
+                {b.includes('Carta') && <BarChart color="var(--agent-gold)" />}
+              </div>
+              <small style={{ fontSize: '0.6rem' }}>{b}</small>
+            </div>
+          ))}
+        </div>
+
+        <div style={{ display: 'flex', gap: '20px', justifyContent: 'center' }}>
+          <button className="primaryBtn" onClick={() => window.print()}>
+            Simpan Sijil
+          </button>
+          <button className="miniBtn" onClick={resetProgress}>
+            <RefreshCcw /> Misi Baharu
+          </button>
+        </div>
+      </Panel>
+    </main>
+  );
+};
+
+const TeacherPanel = ({ setPage }) => (
+  <main className="screen">
+    <Panel>
+      <h2 className="neon-text">Pusat Kawalan Guru</h2>
+      <div style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+        <h3 style={{ color: 'var(--neon-cyan)' }}>Rasional Pedagogi</h3>
+        <p><strong>MBPK Masalah Pembelajaran:</strong> Visual support, scaffolded steps, no time pressure.</p>
+        <p><strong>Thinking Tools:</strong> Peta Alir (Sequencing), Carta Radar (Comparison), KBAT (Reasoning).</p>
+        <p><strong>KPPB:</strong> Communication, Critical Thinking, Character.</p>
+        <p><strong>Ethics:</strong> No data collection, original assets.</p>
+      </div>
+      <button className="primaryBtn" onClick={() => setPage('home')} style={{ marginTop: '30px' }}>
+        <Home /> Kembali
+      </button>
+    </Panel>
+  </main>
+);
+
+// --- MAIN APP ---
 
 function App() {
-  const [page, setPage] = useState('home');
-  const [speaking, setSpeaking] = useState(false);
-  const [progress, setProgress] = useState(loadProgress);
+  const [progress, setProgress] = useState(loadProgress());
+  const [page, setPage] = useState(progress.scene || 'home');
   const [soundOn, setSoundOn] = useState(true);
-  const [textLevel, setTextLevel] = useState(1); // 0: Small, 1: Medium, 2: Large
+  const [textLarge, setTextLarge] = useState(false);
+  const [highContrast, setHighContrast] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
 
-  useEffect(() => saveProgress(progress), [progress]);
+  useEffect(() => {
+    saveProgress({ ...progress, scene: page });
+  }, [page, progress]);
 
-  const className = useMemo(() => [
+  const addBadge = (badge) => {
+    if (!progress.badges.includes(badge)) {
+      setProgress({ ...progress, badges: [...progress.badges, badge] });
+    }
+  };
+
+  const resetProgress = () => {
+    if (window.confirm("Set semula semua misi?")) {
+      const init = { badges: [], scene: 'home', items: [], reason1: '', reason2: '', reflection: '' };
+      setProgress(init);
+      setPage('home');
+    }
+  };
+
+  const shellClass = [
     'appShell',
-    `text-lvl-${textLevel}`,
-    reduceMotion ? 'reduceMotion' : ''
-  ].join(' '), [textLevel, reduceMotion]);
-
-  function reset() {
-    if (!window.confirm('Adakah anda pasti mahu set semula semua kemajuan?')) return;
-    const next = { badges: [], quizScore: 0 };
-    setProgress(next);
-    setPage('home');
-  }
+    textLarge ? 'text-large' : '',
+    highContrast ? 'high-contrast' : '',
+    reduceMotion ? 'reduce-motion' : ''
+  ].join(' ');
 
   return (
-    <div className={className}>
-      <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
-      <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} textLevel={textLevel} setTextLevel={setTextLevel} reduceMotion={reduceMotion} setReduceMotion={setReduceMotion} />
-      <div className="screen">
-        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} progress={progress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} setSpeaking={setSpeaking} />}
-        {page === 'teacher' && <TeacherGuide setPage={setPage} />}
-      </div>
-      <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> Reset</button>
+    <div className={shellClass}>
+      <header className="topbar">
+        <div className="brand" onClick={() => setPage('home')} style={{ cursor: 'pointer' }}>
+          <div style={{ width: '40px', height: '40px', border: '2px solid var(--neon-cyan)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <AgentBijak size="small" badge={false} />
+          </div>
+          <div>
+            <h1>Akademi Agen RM5</h1>
+            <small>Unit Operasi Kedai Mini</small>
+          </div>
+        </div>
+        <div className="tools">
+          <button className="miniBtn" onClick={() => setSoundOn(!soundOn)} title="Toggle Sound">
+            {soundOn ? <Volume2 size={16} /> : <VolumeX size={16} />} Audio
+          </button>
+          <button className="miniBtn" onClick={() => setTextLarge(!textLarge)}>Teks</button>
+          <button className="miniBtn" onClick={() => setHighContrast(!highContrast)}>Kontras</button>
+          <button className="miniBtn" onClick={() => setReduceMotion(!reduceMotion)}>Gerak</button>
+          <button className="miniBtn" onClick={resetProgress}><RefreshCcw size={16}/></button>
+        </div>
+      </header>
+
+      {page === 'home' && <TitleScreen setPage={setPage} soundOn={soundOn} />}
+      {page === 'briefing' && <BriefingScene setPage={setPage} soundOn={soundOn} />}
+      {page === 'money' && <MoneyScene setPage={setPage} soundOn={soundOn} addBadge={addBadge} />}
+      {page === 'flow' && <FlowScene setPage={setPage} soundOn={soundOn} addBadge={addBadge} />}
+      {page === 'shop' && <ShopScene setPage={setPage} soundOn={soundOn} addBadge={addBadge} progress={progress} setProgress={setProgress} />}
+      {page === 'challenge1' && <Challenge1Scene setPage={setPage} soundOn={soundOn} />}
+      {page === 'challenge2' && <Challenge2Scene setPage={setPage} soundOn={soundOn} progress={progress} setProgress={setProgress} />}
+      {page === 'radar' && <RadarScene setPage={setPage} soundOn={soundOn} addBadge={addBadge} progress={progress} setProgress={setProgress} />}
+      {page === 'challenge3' && <Challenge3Scene setPage={setPage} soundOn={soundOn} />}
+      {page === 'reflection' && <ReflectionScene setPage={setPage} soundOn={soundOn} progress={progress} setProgress={setProgress} />}
+      {page === 'summary' && <SummaryScene setPage={setPage} progress={progress} resetProgress={resetProgress} soundOn={soundOn} />}
+      {page === 'teacher' && <TeacherPanel setPage={setPage} />}
+
+      <footer>
+        &copy; 2025 Akademi Agen RM5 | Protokol Belanja Bijak MBPK Masalah Pembelajaran
+      </footer>
     </div>
   );
 }
