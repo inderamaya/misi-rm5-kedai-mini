@@ -59,14 +59,39 @@ const DidiDuit = ({ bouncing = true, size = "normal", className = "" }) => (
   </div>
 );
 
+const QuestionBlock = ({ style }) => {
+  const [bumped, setBumped] = useState(false);
+  return (
+    <div
+      className={`question-block ${bumped ? 'bumped' : ''}`}
+      style={style}
+      onClick={() => {
+        setBumped(true);
+        setTimeout(() => setBumped(false), 200);
+      }}
+    >
+      ?
+    </div>
+  );
+};
+
 const WorldBackground = () => (
   <div className="world-bg">
     <div className="cloud" style={{ top: '10%', left: '10%', animationDelay: '0s' }}></div>
     <div className="cloud" style={{ top: '25%', left: '40%', animationDelay: '-5s' }}></div>
     <div className="cloud" style={{ top: '15%', left: '70%', animationDelay: '-12s' }}></div>
 
-    <div className="hill" style={{ width: '300px', height: '150px', left: '-50px', bottom: '60px', opacity: 0.8 }}></div>
-    <div className="hill" style={{ width: '400px', height: '200px', right: '-100px', bottom: '60px', opacity: 0.6 }}></div>
+    <div className="hill hill-back" style={{ width: '500px', height: '250px', left: '10%', bottom: '60px' }}></div>
+    <div className="hill hill-front" style={{ width: '300px', height: '150px', left: '-50px', bottom: '60px' }}></div>
+    <div className="hill hill-front" style={{ width: '400px', height: '200px', right: '-100px', bottom: '60px' }}></div>
+
+    <div className="bush" style={{ width: '120px', height: '60px', left: '20%', bottom: '60px' }}></div>
+    <div className="bush" style={{ width: '150px', height: '75px', right: '15%', bottom: '60px' }}></div>
+
+    <QuestionBlock style={{ top: '20%', left: '25%' }} />
+    <QuestionBlock style={{ top: '35%', left: '65%' }} />
+    <div className="brick-bg" style={{ top: '35%', left: '60%', width: '40px', height: '40px' }}></div>
+    <div className="brick-bg" style={{ top: '35%', left: '70%', width: '40px', height: '40px' }}></div>
 
     <div className="ground">
       <div className="ground-grass"></div>
@@ -697,8 +722,8 @@ function App() {
   const [progress, setProgress] = useState(loadProgress());
   const [page, setPage] = useState(progress.scene || 'home');
   const [soundOn, setSoundOn] = useState(true);
-  const [textLarge, setTextLarge] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
+  const [textSize, setTextSize] = useState('normal'); // 'small', 'normal', 'large'
+  const [darkMode, setDarkMode] = useState(false);
   const [reduceMotion, setReduceMotion] = useState(false);
   const [showCoins, setShowCoins] = useState(false);
   const [isWalking, setIsWalking] = useState(false);
@@ -750,8 +775,9 @@ function App() {
 
   const shellClass = [
     'app-container',
-    textLarge ? 'text-large' : '',
-    highContrast ? 'high-contrast' : '',
+    textSize === 'large' ? 'text-large' : '',
+    textSize === 'small' ? 'text-small' : '',
+    darkMode ? 'dark-mode' : '',
     reduceMotion ? 'reduce-motion' : ''
   ].join(' ');
 
@@ -770,11 +796,18 @@ function App() {
             <button className="game-btn secondary" style={{ padding: '5px 10px', fontSize: '1rem' }} onClick={() => setSoundOn(!soundOn)}>
               {soundOn ? <Volume2 size={20} /> : <VolumeX size={20} />}
             </button>
-            <button className="game-btn secondary" style={{ padding: '5px 10px', fontSize: '1rem' }} onClick={() => setHighContrast(!highContrast)}>
-              🌓
+            <button className="game-btn secondary" style={{ padding: '5px 10px', fontSize: '1rem' }} onClick={() => setDarkMode(!darkMode)}>
+              {darkMode ? '☀️' : '🌙'}
             </button>
-            <button className="game-btn secondary" style={{ padding: '5px 10px', fontSize: '1rem' }} onClick={() => setTextLarge(!textLarge)}>
-              A+
+            <button
+              className="game-btn secondary"
+              style={{ padding: '5px 10px', fontSize: '1rem', minWidth: '45px', justifyContent: 'center' }}
+              onClick={() => {
+                const nextSize = textSize === 'normal' ? 'large' : textSize === 'large' ? 'small' : 'normal';
+                setTextSize(nextSize);
+              }}
+            >
+              {textSize === 'normal' ? 'A' : textSize === 'large' ? 'A+' : 'A-'}
             </button>
             <button className="game-btn secondary" style={{ padding: '5px 10px', fontSize: '1rem' }} onClick={resetProgress}>
               <RefreshCcw size={20} />
