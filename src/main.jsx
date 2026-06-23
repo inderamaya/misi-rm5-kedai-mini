@@ -73,7 +73,7 @@ const Icons = {
     <svg width="50" height="50" viewBox="0 0 50 50">
       <rect x="12" y="10" width="26" height="32" fill="#FFFFFF" stroke="#1C1C1C" strokeWidth="3" />
       <path d="M12 20 L38 20" stroke="#1C1C1C" strokeWidth="2" />
-      <text x="25" y="32" textAnchor="middle" fontSize="8" fontWeight="bold">MILK</text>
+      <text x="25" y="32" textAnchor="middle" fontSize="8" fontWeight="bold">SUSU</text>
     </svg>
   ),
   book: () => (
@@ -138,12 +138,12 @@ function StarRating({ label, value }) {
   );
 }
 
-function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContrast, largeText, setLargeText, reduceMotion, setReduceMotion }) {
+function Header({ page, setPage, soundOn, setSoundOn, textLevel, setTextLevel, reduceMotion, setReduceMotion }) {
   return (
     <header className="topbar">
       <button className="homeBtn" onClick={() => setPage('home')}><Home size={18} /> Utama</button>
       <div className="brand">
-        <div className="float-coin" style={{width: '40px', height: '40px', background: 'var(--coin)', border: '3px solid var(--outline)', borderRadius: '50%', display: 'grid', placeItems: 'center', fontWeight: '900'}}>RM5</div>
+        <div style={{width: '40px', height: '40px', background: 'var(--coin)', border: '3px solid var(--outline)', borderRadius: '50%', display: 'grid', placeItems: 'center', fontWeight: '900'}}>RM5</div>
         <div>
           <strong>DUNIA SYILING RM5</strong>
           <small>Misi Kedai Mini: Pilih, Kira, Bayar!</small>
@@ -151,8 +151,7 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
       </div>
       <div className="tools">
         <button className="miniBtn" onClick={() => setSoundOn(!soundOn)}>{soundOn ? <Volume2 size={17}/> : <VolumeX size={17}/>} Audio</button>
-        <button className="miniBtn" onClick={() => setLargeText(!largeText)}>Teks</button>
-        <button className="miniBtn" onClick={() => setHighContrast(!highContrast)}>Kontras</button>
+        <button className="miniBtn" onClick={() => setTextLevel((textLevel + 1) % 3)}>Teks</button>
         <button className="miniBtn" onClick={() => setReduceMotion(!reduceMotion)}>Gerak</button>
       </div>
     </header>
@@ -165,7 +164,7 @@ function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
     <main>
       <section className="heroCard castlePanel">
         <div className="heroText">
-          <div className="badge-label">WORLD 1: Welcome Gate</div>
+          <div className="badge-label">DUNIA 1: Pintu Masuk</div>
           <h1>Selamat Datang ke Dunia Syiling RM5!</h1>
           <p style={{fontSize: '1.2rem', fontWeight: '900', marginBottom: '20px'}}>Misi Kedai Mini: Pilih, Kira, Bayar!</p>
           <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
@@ -203,7 +202,20 @@ function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
         <h2>Lencana Saya</h2>
         <div className="badge-row">
           {progress.badges.length ? progress.badges.map(b => (
-            <div key={b} className="medal" title={b}>⭐</div>
+            <button
+              key={b}
+              className="medal bounce"
+              onClick={() => speak(`Tahniah! Anda mendapat ${b}`, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
+              title={b}
+              aria-label={`Lencana: ${b}`}
+            >
+              {b.includes('Wang') && <Coins size={40} />}
+              {b.includes('Peta Alir') && <Map size={40} />}
+              {b.includes('Pembeli Bijak') && <ShoppingBasket size={40} />}
+              {b.includes('Carta Bijak') && <Brain size={40} />}
+              {b.includes('Juara') && <Trophy size={40} />}
+              <small style={{display: 'block', fontSize: '0.7rem', marginTop: '5px'}}>{b}</small>
+            </button>
           )) : <p className="muted">Belum ada lencana. Mari mula misi.</p>}
         </div>
       </section>
@@ -252,7 +264,7 @@ function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main>
       <section className="missionCard">
-        <div className="badge-label">LEVEL 1</div>
+        <div className="badge-label">TAHAP 1</div>
         <h1>Kenali RM5</h1>
         <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Klik wang yang bernilai <strong>RM5</strong>.</p>
 
@@ -298,7 +310,7 @@ function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main>
       <section className="missionCard">
-        <div className="badge-label">LEVEL 2</div>
+        <div className="badge-label">TAHAP 2</div>
         <h1>Peta Alir Pembeli Bijak</h1>
         <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Tekan setiap langkah mengikut urutan (1 hingga 6).</p>
 
@@ -364,7 +376,7 @@ function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main>
       <section className="missionCard">
-        <div className="badge-label">LEVEL 3</div>
+        <div className="badge-label">TAHAP 3</div>
         <h1>Kedai Mini Ajaib</h1>
         <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Kamu ada <strong className="price-tag">RM5</strong>. Pilih barang keperluan dahulu.</p>
 
@@ -433,7 +445,7 @@ function WiseChoiceScreen({ setPage, soundOn, setProgress, speaking, setSpeaking
   return (
     <main>
       <section className="missionCard">
-        <div className="badge-label">LEVEL 4</div>
+        <div className="badge-label">TAHAP 4</div>
         <h1>Carta Bijak</h1>
         <p style={{fontSize: '1.2rem', fontWeight: '900'}}>Bandingkan barang menggunakan bintang.</p>
 
@@ -503,7 +515,7 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main>
       <section className="missionCard">
-        <div className="badge-label">LEVEL 5</div>
+        <div className="badge-label">TAHAP 5</div>
         <h1>Kuiz Pengukuhan</h1>
 
         <div className="quizGrid">
@@ -547,7 +559,7 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   );
 }
 
-function FinishScreen({ setPage, progress }) {
+function FinishScreen({ setPage, progress, soundOn, setSpeaking }) {
   return (
     <main>
       <div className="castle-container">
@@ -566,7 +578,21 @@ function FinishScreen({ setPage, progress }) {
           <h2>Koleksi Lencana Anda:</h2>
           <div className="badge-row" style={{justifyContent: 'center'}}>
             {progress.badges.map(b => (
-              <div key={b} className="medal" title={b} style={{width: '100px', height: '100px', fontSize: '3rem'}}>⭐</div>
+              <button
+                key={b}
+                className="medal bounce"
+                onClick={() => speak(`Tahniah! Anda telah memenangi ${b}`, soundOn, () => setSpeaking(true), () => setSpeaking(false))}
+                title={b}
+                style={{width: '120px', height: '120px', flexDirection: 'column'}}
+                aria-label={`Lencana: ${b}`}
+              >
+                {b.includes('Wang') && <Coins size={50} />}
+                {b.includes('Peta Alir') && <Map size={50} />}
+                {b.includes('Pembeli Bijak') && <ShoppingBasket size={50} />}
+                {b.includes('Carta Bijak') && <Brain size={50} />}
+                {b.includes('Juara') && <Trophy size={50} />}
+                <small style={{display: 'block', fontSize: '0.8rem', marginTop: '5px', textAlign: 'center'}}>{b}</small>
+              </button>
             ))}
           </div>
         </div>
@@ -639,18 +665,16 @@ function App() {
   const [speaking, setSpeaking] = useState(false);
   const [progress, setProgress] = useState(loadProgress);
   const [soundOn, setSoundOn] = useState(true);
-  const [largeText, setLargeText] = useState(false);
-  const [highContrast, setHighContrast] = useState(false);
+  const [textLevel, setTextLevel] = useState(1); // 0: Small, 1: Medium, 2: Large
   const [reduceMotion, setReduceMotion] = useState(false);
 
   useEffect(() => saveProgress(progress), [progress]);
 
   const className = useMemo(() => [
     'appShell',
-    largeText ? 'largeText' : '',
-    highContrast ? 'highContrast' : '',
+    `text-lvl-${textLevel}`,
     reduceMotion ? 'reduceMotion' : ''
-  ].join(' '), [largeText, highContrast, reduceMotion]);
+  ].join(' '), [textLevel, reduceMotion]);
 
   function reset() {
     if (!window.confirm('Adakah anda pasti mahu set semula semua kemajuan?')) return;
@@ -662,7 +686,7 @@ function App() {
   return (
     <div className={className}>
       <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
-      <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} highContrast={highContrast} setHighContrast={setHighContrast} largeText={largeText} setLargeText={setLargeText} reduceMotion={reduceMotion} setReduceMotion={setReduceMotion} />
+      <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} textLevel={textLevel} setTextLevel={setTextLevel} reduceMotion={reduceMotion} setReduceMotion={setReduceMotion} />
       <div className="screen">
         {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} progress={progress} speaking={speaking} setSpeaking={setSpeaking} />}
         {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />}
@@ -671,7 +695,7 @@ function App() {
         {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
         {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
         {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} />}
-        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} />}
+        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} setSpeaking={setSpeaking} />}
         {page === 'teacher' && <TeacherGuide setPage={setPage} />}
       </div>
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> Reset</button>
