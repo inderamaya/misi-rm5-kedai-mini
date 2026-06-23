@@ -61,8 +61,8 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
       <div className="brand">
         <span className="pixelCoin">🪙</span>
         <div>
-          <strong>Misi Super RM5</strong>
-          <small>Kedai Mini Ajaib</small>
+          <strong>Dunia Syiling RM5</strong>
+          <small>Pilih, Kira, Bayar!</small>
         </div>
       </div>
       <div className="tools">
@@ -75,26 +75,31 @@ function Header({ page, setPage, soundOn, setSoundOn, highContrast, setHighContr
   );
 }
 
+function DidiDuit() {
+  return (
+    <div className="didi-duit" aria-hidden="true">
+      <div className="didi-mouth"></div>
+      <div className="didi-arms"></div>
+    </div>
+  );
+}
+
 function HomeScreen({ setPage, soundOn, progress, speaking, setSpeaking }) {
-  const intro = 'Selamat datang ke Misi Super RM5. Hari ini kita belajar mengenal wang, memilih barang, mengira jumlah harga, dan membuat keputusan bijak.';
+  const intro = 'Selamat datang ke Dunia Syiling RM5. Hari ini kita belajar mengenal wang, memilih barang, mengira jumlah harga, dan membuat keputusan bijak.';
   return (
     <main className="screen homeScreen">
       <section className="heroCard castlePanel">
-        <div className="cloud cloud1">☁️</div>
-        <div className="cloud cloud2">☁️</div>
         <div className="heroText">
-          <Badge>Untuk MBPK Masalah Pembelajaran Tahap 2</Badge>
-          <h1>Misi Super RM5</h1>
-          <p>Pilih barang, kira wang, semak baki, dan buat keputusan bijak.</p>
+          <Badge>WORLD 1: Welcome Gate</Badge>
+          <h1>Dunia Syiling RM5</h1>
+          <p>Misi Kedai Mini: Pilih, Kira, Bayar!</p>
           <div className="buttonRow">
-            <button className="primaryBtn" onClick={() => setPage('intro')}><Sparkles size={20}/> Mula Misi</button>
+            <button className="primaryBtn" onClick={() => setPage('intro')}><Sparkles size={20}/> Mulakan Misi</button>
             <AudioButton text={intro} soundOn={soundOn} speaking={speaking} setSpeaking={setSpeaking} />
           </div>
         </div>
         <div className="heroMascot" aria-hidden="true">
-          <div className="shopSprite">🏪</div>
-          <div className="learnerSprite">🧑‍🎓</div>
-          <div className="coinTrail">🪙 🪙 🪙</div>
+          <DidiDuit />
         </div>
       </section>
 
@@ -145,7 +150,7 @@ function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   const correct = chosen === 'rm5';
   function award() {
     setProgress(prev => {
-      const badges = prev.badges.includes('Kenali Wang') ? prev.badges : [...prev.badges, 'Kenali Wang'];
+      const badges = prev.badges.includes('Lencana Wang') ? prev.badges : [...prev.badges, 'Lencana Wang'];
       return { ...prev, badges };
     });
   }
@@ -153,8 +158,8 @@ function MoneyScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main className="screen">
       <section className="missionCard">
-        <Badge>Misi 1</Badge>
-        <h1>Kenali Wang</h1>
+        <Badge>LEVEL 1</Badge>
+        <h1>Kenali RM5</h1>
         <p className="bigInstruction">Klik wang yang bernilai <strong>RM5</strong>.</p>
         <div className="moneyGrid">
           {moneyChoices.map(m => (
@@ -184,7 +189,7 @@ function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   useEffect(() => {
     if (complete) {
       setProgress(prev => {
-        const badges = prev.badges.includes('Peta Alir') ? prev.badges : [...prev.badges, 'Peta Alir'];
+        const badges = prev.badges.includes('Lencana Peta Alir') ? prev.badges : [...prev.badges, 'Lencana Peta Alir'];
         return { ...prev, badges };
       });
     }
@@ -192,8 +197,8 @@ function FlowScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main className="screen">
       <section className="missionCard wide">
-        <Badge>Alat Berfikir Utama</Badge>
-        <h1>Peta Alir: Langkah Membeli Barang</h1>
+        <Badge>LEVEL 2</Badge>
+        <h1>Peta Alir Pembeli Bijak</h1>
         <p className="bigInstruction">Tekan setiap langkah. Baca dan ikut urutan.</p>
         <div className="flowGrid">
           {flowSteps.map((s, idx) => (
@@ -246,8 +251,8 @@ function ShopScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main className="screen">
       <section className="missionCard wide">
-        <Badge>Misi 2</Badge>
-        <h1>Kedai Mini Maya</h1>
+        <Badge>LEVEL 3</Badge>
+        <h1>Kedai Mini Ajaib</h1>
         <p className="bigInstruction">Kamu ada <strong>RM5</strong>. Pilih barang yang sesuai. Pastikan wang cukup.</p>
         <div className="shopLayout">
           <div className="itemGrid">
@@ -292,8 +297,8 @@ function WiseChoiceScreen({ setPage, soundOn, speaking, setSpeaking }) {
   return (
     <main className="screen">
       <section className="missionCard wide">
-        <Badge>Alat Berfikir Kedua</Badge>
-        <h1>Carta Bijak: Harga, Keperluan, Manfaat</h1>
+        <Badge>LEVEL 4</Badge>
+        <h1>Carta Bijak</h1>
         <p className="bigInstruction">Pilih satu barang. Lihat bintang untuk membuat keputusan.</p>
         <div className="wiseLayout">
           <div className="miniItemList">
@@ -305,15 +310,16 @@ function WiseChoiceScreen({ setPage, soundOn, speaking, setSpeaking }) {
             <div className="giantSymbol">{active.symbol}</div>
             <h2>{active.name}</h2>
             <p className="priceTag">RM{active.price}</p>
-            <StarRating label="Harga sesuai" value={active.price <= 3 ? 3 : active.price === 4 ? 2 : 1} />
+            <StarRating label="Harga Sesuai" value={active.price <= 2 ? 3 : active.price <= 4 ? 2 : 1} />
             <StarRating label="Diperlukan" value={active.need} />
-            <StarRating label="Baik untuk diri" value={active.good} />
-            <div className="teacherNote">Murid belajar membandingkan pilihan, bukan hanya mengira harga.</div>
+            <StarRating label="Baik untuk Diri" value={active.good} />
+            <div className="teacherNote">Adakah barang ini pilihan bijak? Mengapa?</div>
           </div>
         </div>
         <div className="questionBox">
           <strong>Soalan KBAT Mudah:</strong>
           <p>Jika kamu hanya ada RM5, adakah barang ini pilihan bijak? Mengapa?</p>
+          <p style={{marginTop: '10px', color: 'var(--sky-dark)'}}><em>Contoh: "Saya pilih <strong>{active.name}</strong> kerana <strong>ia diperlukan</strong>."</em></p>
         </div>
         <div className="buttonRow">
           <button className="primaryBtn" onClick={() => setPage('quiz')}>Seterusnya: Kuiz</button>
@@ -332,7 +338,7 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   useEffect(() => {
     if (complete) {
       setProgress(prev => {
-        const badges = score >= 3 && !prev.badges.includes('Juara Misi') ? [...prev.badges, 'Juara Misi'] : prev.badges;
+        const badges = score >= 4 && !prev.badges.includes('Juara Dunia Syiling RM5') ? [...prev.badges, 'Juara Dunia Syiling RM5'] : prev.badges;
         return { ...prev, badges, quizScore: score };
       });
     }
@@ -340,8 +346,8 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
   return (
     <main className="screen">
       <section className="missionCard wide">
-        <Badge>Pengukuhan</Badge>
-        <h1>Kuiz Pembeli Bijak</h1>
+        <Badge>LEVEL 5</Badge>
+        <h1>Kuiz Pengukuhan</h1>
         <div className="quizGrid">
           {quiz.map((q, idx) => (
             <div className="quizCard" key={q.q}>
@@ -372,23 +378,30 @@ function QuizScreen({ setPage, soundOn, setProgress, speaking, setSpeaking }) {
 function FinishScreen({ setPage, progress }) {
   return (
     <main className="screen">
-      <section className="missionCard">
-        <Badge>Rumusan Pembelajaran</Badge>
-        <h1>Tahniah, Pembeli Bijak!</h1>
-        <p className="bigInstruction">Hari ini kamu belajar melihat wang, membaca harga, memilih barang, mengira baki, dan membuat keputusan.</p>
+      <section className="missionCard finish-area">
+        <div className="castle-top">🏰</div>
+        <Badge>Istana Pembeli Bijak</Badge>
+        <h1>Tahniah!</h1>
+        <p className="bigInstruction">Kamu sudah belajar memilih barang, mengira wang, dan membuat keputusan bijak.</p>
+
         <div className="summaryList">
-          <p>✅ Saya boleh mengenal RM5.</p>
-          <p>✅ Saya boleh ikut Peta Alir membeli barang.</p>
-          <p>✅ Saya boleh memilih barang mengikut bajet.</p>
-          <p>✅ Saya boleh memberi sebab pilihan saya.</p>
+          <h2>Misi Selesai:</h2>
+          <p>✅ Kenali RM5</p>
+          <p>✅ Ikut Peta Alir</p>
+          <p>✅ Pilih Barang Bijak</p>
+          <p>✅ Kira Jumlah & Baki</p>
         </div>
+
         <div className="progressBox">
-          <h2>Lencana Akhir</h2>
-          <div className="badges">{progress.badges.map(b => <span key={b} className="earned">🏅 {b}</span>)}</div>
+          <h2>Lencana Saya</h2>
+          <div className="badges">
+            {progress.badges.map(b => <span key={b} className="earned">🏅 {b}</span>)}
+          </div>
         </div>
-        <div className="buttonRow">
+
+        <div className="buttonRow" style={{justifyContent: 'center'}}>
           <button className="primaryBtn" onClick={() => setPage('home')}>Kembali ke Utama</button>
-          <button className="secondaryBtn" onClick={() => window.print()}>Cetak / Simpan PDF</button>
+          <button className="secondaryBtn" onClick={() => window.print()}>Cetak Lencana</button>
         </div>
       </section>
     </main>
@@ -399,66 +412,62 @@ function TeacherGuide({ setPage }) {
   return (
     <main className="screen">
       <section className="missionCard wide teacherGuide">
-        <Badge>Rasional Guru Pelatih</Badge>
-        <h1>Panduan Pensyarah / Guru</h1>
+        <Badge>Panduan Guru / Pensyarah</Badge>
+        <h1>Rasional Reka Bentuk Digital</h1>
         <div className="guideGrid">
           <div>
-            <h2>Objektif Pembelajaran</h2>
+            <h2>1. Kesesuaian MBPK</h2>
             <ul>
-              <li>Murid mengenal nilai RM5.</li>
-              <li>Murid menyusun langkah membeli barang menggunakan Peta Alir.</li>
-              <li>Murid memilih barang berdasarkan bajet.</li>
-              <li>Murid memberi sebab mudah bagi pilihan barang.</li>
+              <li>Sokongan visual (ikon + teks).</li>
+              <li>Arahan pendek & berulang.</li>
+              <li>Latihan berperingkat (scaffolded).</li>
+              <li>Tiada tekanan masa.</li>
+              <li>Peneguhan positif (Lencana).</li>
+              <li>Sokongan audio (Read-aloud).</li>
+              <li>Kiraan matematik mudah.</li>
+              <li>Konteks kehidupan harian.</li>
             </ul>
           </div>
           <div>
-            <h2>Kesediaan MBPK</h2>
+            <h2>2. Alat Berfikir</h2>
             <ul>
-              <li>Arahan ringkas dan berulang.</li>
-              <li>Butang besar sesuai sentuhan.</li>
-              <li>Visual, simbol dan emoji sebagai sokongan.</li>
-              <li>Tiada pemasa bagi mengurangkan tekanan.</li>
-              <li>Audio arahan melalui Web Speech API.</li>
+              <li><strong>Peta Alir:</strong> Membantu murid menyusun langkah membeli barang secara berurutan.</li>
+              <li><strong>Carta Bijak:</strong> Membantu murid membandingkan barang berdasarkan harga, keperluan, dan manfaat.</li>
+              <li><strong>Penyoalan KBAT:</strong> Menggalakkan murid memberi sebab mudah bagi pilihan mereka.</li>
             </ul>
           </div>
           <div>
-            <h2>Alat Berfikir</h2>
+            <h2>3. Kemahiran Belajar</h2>
             <ul>
-              <li><strong>Peta Alir:</strong> menyusun langkah pembelian.</li>
-              <li><strong>Carta Bijak:</strong> membandingkan harga, keperluan dan manfaat.</li>
-              <li><strong>Penyoalan KBAT:</strong> murid memberi sebab pilihan.</li>
+              <li>Memperoleh maklumat (Mengenal RM5).</li>
+              <li>Mengurus maklumat (Peta Alir).</li>
+              <li>Memproses maklumat (Kiraan harga/baki).</li>
+              <li>Membuat keputusan (Pilihan bijak).</li>
+              <li>Refleksi pembelajaran (Rumusan).</li>
             </ul>
           </div>
           <div>
-            <h2>Kemahiran Belajar</h2>
+            <h2>4. Elemen KPPB</h2>
             <ul>
-              <li>Memperoleh maklumat melalui visual harga.</li>
-              <li>Mengurus maklumat melalui peta alir.</li>
-              <li>Memproses maklumat melalui kiraan wang.</li>
-              <li>Menyampaikan maklumat melalui alasan pilihan.</li>
+              <li><strong>Communication:</strong> Menyatakan pilihan dan sebab.</li>
+              <li><strong>Creativity:</strong> Simulasi pengembaraan platformer.</li>
+              <li><strong>Critical Thinking:</strong> Menilai keperluan vs kehendak.</li>
+              <li><strong>Character:</strong> Tanggungjawab dalam berbelanja.</li>
+              <li><strong>Citizenship:</strong> Nilai celik kewangan.</li>
             </ul>
           </div>
           <div>
-            <h2>Elemen KPPB</h2>
+            <h2>5. Etika Teknologi</h2>
             <ul>
-              <li><strong>Communication:</strong> menyatakan pilihan dan sebab.</li>
-              <li><strong>Creativity:</strong> simulasi kedai mini interaktif.</li>
-              <li><strong>Critical Thinking:</strong> membanding harga dan keperluan.</li>
-              <li><strong>Character:</strong> berbelanja secara bertanggungjawab.</li>
-              <li><strong>Citizenship:</strong> nilai pengguna bijak.</li>
-            </ul>
-          </div>
-          <div>
-            <h2>Nota Etika Teknologi</h2>
-            <ul>
-              <li>Tiada data murid dihantar ke pelayan.</li>
-              <li>Progress disimpan secara localStorage sahaja.</li>
-              <li>Tiada iklan, pautan luar atau aset berhak cipta.</li>
-              <li>Gunakan tema retro platformer asli, bukan aset rasmi mana-mana permainan.</li>
+              <li>Tiada iklan atau pautan luar.</li>
+              <li>Tiada pengumpulan data peribadi.</li>
+              <li>Data disimpan secara lokal (LocalStorage).</li>
+              <li>Tiada aset berhak cipta.</li>
+              <li>Reka bentuk aksesibel (Kontras/Teks Besar).</li>
             </ul>
           </div>
         </div>
-        <button className="primaryBtn" onClick={() => setPage('home')}>Kembali</button>
+        <button className="primaryBtn" onClick={() => setPage('home')}>Kembali ke Utama</button>
       </section>
     </main>
   );
