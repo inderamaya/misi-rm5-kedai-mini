@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700;900&display=swap');
 
 :root {
   --sky: #5BCBFF;
@@ -14,7 +14,7 @@
   --white: #FFFFFF;
   --ground-dirt: #8B5A2B;
   --shadow: 0 8px 0 var(--outline);
-  font-family: 'Bubblegum Sans', cursive, system-ui, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
 /* Base resets */
@@ -251,7 +251,7 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 /* Grids */
 .moneyGrid, .itemGrid, .flowPath, .quizGrid {
   display: grid;
-  gap: 24px;
+  gap: 32px;
   margin: 30px 0;
 }
 .moneyGrid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
@@ -259,16 +259,16 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 
 .platform-card {
   background: var(--white);
-  border: 5px solid var(--outline);
-  border-radius: 20px;
-  padding: 20px;
+  border: 4px solid var(--outline);
+  border-radius: 12px;
+  padding: 24px;
   cursor: pointer;
-  box-shadow: 0 8px 0 var(--outline);
+  box-shadow: 6px 6px 0 var(--outline);
   transition: all 0.1s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 .platform-card:hover { transform: translateY(-4px); box-shadow: 0 12px 0 var(--outline); }
 .platform-card:active { transform: translateY(6px); box-shadow: 0 2px 0 var(--outline); }
@@ -391,27 +391,15 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
   50% { transform: translateY(-15px) rotateY(180deg); }
 }
 
-/* Accessibility */
-.appShell.highContrast {
-  --sky: #000;
-  --sky-dark: #00f;
-  --grass: #000;
-  --leaf: #000;
-  --cream: #fff;
-  --outline: #fff;
-  --white: #000;
-  --red: #f00;
-  --coin: #ff0;
-  --brick: #000;
-  --ground-dirt: #000;
-}
-.appShell.highContrast .primaryBtn, .appShell.highContrast .badge-label, .appShell.highContrast .stepping-stone, .appShell.highContrast .wooden-sign {
-  border-color: #fff !important;
-  color: #fff !important;
-}
+/* Accessibility & Text Scaling */
+.appShell.text-lvl-0 { font-size: 0.9rem; }
+.appShell.text-lvl-0 h1 { font-size: 2.5rem; }
 
-.appShell.largeText { font-size: 1.25rem; }
-.appShell.largeText h1 { font-size: 4rem; }
+.appShell.text-lvl-1 { font-size: 1rem; }
+.appShell.text-lvl-1 h1 { font-size: 3.5rem; }
+
+.appShell.text-lvl-2 { font-size: 1.3rem; }
+.appShell.text-lvl-2 h1 { font-size: 4.5rem; }
 
 .appShell.reduceMotion *, .appShell.reduceMotion *::before, .appShell.reduceMotion *::after {
   animation: none !important;
@@ -427,20 +415,20 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 .objectiveGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 20px;
+  gap: 32px;
   margin-top: 40px;
 }
 .level-card {
   background: var(--white);
-  border: 6px solid var(--outline);
-  border-radius: 20px;
-  padding: 20px;
+  border: 4px solid var(--outline);
+  border-radius: 12px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 15px;
   cursor: pointer;
-  box-shadow: 0 8px 0 var(--outline);
+  box-shadow: 6px 6px 0 var(--outline);
   font-weight: 900;
   transition: transform 0.1s;
 }
@@ -462,18 +450,24 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
   margin-top: 20px;
 }
 .medal {
-  width: 80px;
-  height: 80px;
+  width: 100px;
+  height: 100px;
   background: var(--coin);
   border: 4px solid var(--outline);
-  border-radius: 50%;
+  border-radius: 20px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
-  box-shadow: 0 4px 0 var(--outline);
+  font-family: inherit;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 4px 4px 0 var(--outline);
   animation: pop-in 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.1s;
+  padding: 10px;
 }
+.medal:active { transform: scale(0.9) !important; }
 @keyframes pop-in {
   from { transform: scale(0); }
   to { transform: scale(1); }
