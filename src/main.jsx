@@ -262,7 +262,7 @@ function DidiDuit({ className = "" }) {
       width: '100px', height: '100px', background: 'var(--coin)',
       border: '6px solid var(--outline)', borderRadius: '50%',
       position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: 'inset -6px -6px 0 rgba(0,0,0,0.1)'
+      boxShadow: 'inset -6px -6px 0 rgba(0,0,0,0.1)', flexShrink: 0
     }}>
       <div style={{ display: 'flex', gap: '20px' }}>
         <div style={{ width: '10px', height: '10px', background: 'var(--outline)', borderRadius: '50%' }}></div>
