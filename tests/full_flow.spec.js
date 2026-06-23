@@ -4,7 +4,7 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.goto('http://localhost:5173');
 
   // Home Screen
-  await expect(page.locator('h1')).toContainText('Misi RM5');
+  await expect(page.locator('h1')).toContainText('Misi Super RM5');
   await page.screenshot({ path: 'full_flow_1_home.png' });
 
   // Go to Intro
@@ -15,7 +15,7 @@ test('Verify full user flow and props', async ({ page }) => {
   // Go to Money
   await page.click('button:has-text("Seterusnya: Kenali Wang")');
   await expect(page.locator('h1')).toContainText('Kenali Wang');
-  await page.click('button:has-text("RM5")'); // Select RM5
+  await page.click('button:has-text("RM5")', { force: true }); // Select RM5
   await page.screenshot({ path: 'full_flow_3_money.png' });
 
   // Go to Flow
@@ -31,8 +31,8 @@ test('Verify full user flow and props', async ({ page }) => {
   // Go to Shop
   await page.click('button:has-text("Seterusnya: Misi Kedai")');
   await expect(page.locator('h1')).toContainText('Kedai Mini Maya');
-  await page.click('button:has-text("Roti")');
-  await page.click('button:has-text("Air Mineral")');
+  await page.click('button:has-text("Roti Super")', { force: true });
+  await page.click('button:has-text("Air Ajaib")', { force: true });
   await page.screenshot({ path: 'full_flow_5_shop.png' });
 
   // Go to Wise Choice

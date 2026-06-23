@@ -7,21 +7,21 @@ export const moneyChoices = [
 ];
 
 export const items = [
-  { id: 'water', name: 'Air Mineral', price: 1, symbol: '💧', need: 3, good: 3, tag: 'Minuman sihat' },
-  { id: 'bread', name: 'Roti', price: 2, symbol: '🍞', need: 3, good: 3, tag: 'Makanan rehat' },
-  { id: 'banana', name: 'Pisang', price: 1, symbol: '🍌', need: 3, good: 3, tag: 'Buah' },
-  { id: 'milk', name: 'Susu Kotak', price: 3, symbol: '🥛', need: 2, good: 3, tag: 'Minuman berkhasiat' },
-  { id: 'book', name: 'Buku Kecil', price: 4, symbol: '📘', need: 2, good: 2, tag: 'Alat belajar' },
-  { id: 'toy', name: 'Mainan Kecil', price: 5, symbol: '🧸', need: 1, good: 1, tag: 'Kehendak' },
+  { id: 'water', name: 'Air Ajaib 💧', price: 1, symbol: '🍶', need: 3, good: 3, tag: 'Minuman sihat' },
+  { id: 'bread', name: 'Roti Super 🍞', price: 2, symbol: '🥪', need: 3, good: 3, tag: 'Makanan rehat' },
+  { id: 'banana', name: 'Pisang Kuasa 🍌', price: 1, symbol: '🍌', need: 3, good: 3, tag: 'Buah' },
+  { id: 'milk', name: 'Susu Bintang 🥛', price: 3, symbol: '🥛', need: 2, good: 3, tag: 'Minuman berkhasiat' },
+  { id: 'book', name: 'Buku Ilmu 📘', price: 4, symbol: '📔', need: 2, good: 2, tag: 'Alat belajar' },
+  { id: 'toy', name: 'Kotak Misteri 🎁', price: 5, symbol: '🎁', need: 1, good: 1, tag: 'Kehendak' },
 ];
 
 export const flowSteps = [
-  { icon: '👀', title: 'Lihat Wang', desc: 'Saya ada RM5.' },
-  { icon: '🏷️', title: 'Lihat Harga', desc: 'Baca harga barang.' },
-  { icon: '🛒', title: 'Pilih Barang', desc: 'Pilih barang yang sesuai.' },
-  { icon: '➕', title: 'Kira Jumlah', desc: 'Tambah harga barang.' },
-  { icon: '✅', title: 'Semak Baki', desc: 'Pastikan wang cukup.' },
-  { icon: '🤝', title: 'Bayar', desc: 'Bayar dengan sopan.' },
+  { icon: '💰', title: 'Misi 1: Cek Beg', desc: 'Saya ada RM5.' },
+  { icon: '🏷️', title: 'Misi 2: Intip Harga', desc: 'Baca harga barang.' },
+  { icon: '🛒', title: 'Misi 3: Pilih Barang', desc: 'Pilih barang yang sesuai.' },
+  { icon: '➕', title: 'Misi 4: Kira Kuasa', desc: 'Tambah harga barang.' },
+  { icon: '✅', title: 'Misi 5: Cek Baki', desc: 'Pastikan wang cukup.' },
+  { icon: '🏆', title: 'Misi 6: Bayar & Menang', desc: 'Bayar dengan sopan.' },
 ];
 
 export const quiz = [
@@ -33,13 +33,13 @@ export const quiz = [
   },
   {
     q: 'Barang manakah lebih sesuai untuk waktu rehat?',
-    options: ['Air mineral dan roti', 'Mainan kecil sahaja'],
+    options: ['Air ajaib dan roti super', 'Kotak misteri sahaja'],
     answer: 0,
-    explain: 'Air mineral dan roti lebih sesuai kerana membantu badan semasa rehat.'
+    explain: 'Air ajaib dan roti super lebih sesuai kerana membantu badan semasa rehat.'
   },
   {
     q: 'Apakah langkah pertama sebelum membeli?',
-    options: ['Lihat wang', 'Terus bayar', 'Ambil semua barang'],
+    options: ['Cek beg duit', 'Terus bayar', 'Ambil semua barang'],
     answer: 0,
     explain: 'Kita perlu tahu jumlah wang dahulu.'
   },
