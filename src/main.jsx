@@ -258,20 +258,12 @@ const Icons = {
 
 function DidiDuit({ className = "" }) {
   return (
-    <div className={`didi-duit bounce ${className}`} style={{
-      width: '100px', height: '100px', background: 'var(--coin)',
-      border: '6px solid var(--outline)', borderRadius: '50%',
-      position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      boxShadow: 'inset -6px -6px 0 rgba(0,0,0,0.1)', flexShrink: 0
-    }}>
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <div style={{ width: '10px', height: '10px', background: 'var(--outline)', borderRadius: '50%' }}></div>
-        <div style={{ width: '10px', height: '10px', background: 'var(--outline)', borderRadius: '50%' }}></div>
+    <div className={`didi-duit bounce ${className}`}>
+      <div className="didi-eyes">
+        <div className="didi-eye"></div>
+        <div className="didi-eye"></div>
       </div>
-      <div style={{
-        position: 'absolute', bottom: '25%', width: '30px', height: '15px',
-        borderBottom: '4px solid var(--outline)', borderRadius: '50%'
-      }}></div>
+      <div className="didi-smile"></div>
     </div>
   );
 }
@@ -302,7 +294,7 @@ function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
     <header className="topbar">
       <button className="homeBtn" onClick={() => setPage('home')}><Home size={18} /> {t.home}</button>
       <div className="brand">
-        <div style={{width: '40px', height: '40px', background: 'var(--coin)', border: '3px solid var(--outline)', borderRadius: '50%', display: 'grid', placeItems: 'center', fontWeight: '900'}}>RM5</div>
+        <div className="coin-icon">RM5</div>
         <div>
           <strong>{t.title}</strong>
           <small>{t.subtitle}</small>
