@@ -50,6 +50,7 @@ const translations = {
     diperlukan: "Diperlukan",
     baikDiri: "Baik untuk Diri",
     soalanBijak: "Soalan Bijak:",
+    pendapatDoosee: "Pendapat Doosee:",
     pilihKerana: "Adakah ini pilihan bijak? Mengapa?",
     placeholderReason: "Saya pilih ... kerana...",
     tahap5: "TAHAP 5",
@@ -121,6 +122,7 @@ const translations = {
     diperlukan: "Needed",
     baikDiri: "Good for Self",
     soalanBijak: "Wise Question:",
+    pendapatDoosee: "Doosee's Opinion:",
     pilihKerana: "Is this a wise choice? Why?",
     placeholderReason: "I choose ... because...",
     tahap5: "LEVEL 5",
@@ -440,7 +442,10 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
 
         {chosen && (
           <div className={`toast ${correct ? 'success' : 'error'}`} aria-live="polite">
-            {correct ? t.hebatRM5 : t.cubaLagiRM5}
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
+              {correct && <Doosee className="mini" style={{ width: '60px', height: '60px', borderWidth: '4px' }} />}
+              <span>{correct ? t.hebatRM5 : t.cubaLagiRM5}</span>
+            </div>
           </div>
         )}
 
@@ -637,20 +642,16 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
             <StarRating label={t.diperlukan} value={active.need} />
             <StarRating label={t.baikDiri} value={active.good} />
 
-            <div className="wooden-sign" style={{marginTop: '20px', fontSize: '0.9rem'}}>
-              <strong>{t.soalanBijak}</strong>
-              <p>{t.pilihKerana}</p>
-              <textarea
-                className="reason-input"
-                placeholder={t.placeholderReason.replace('...', active.name[lang])}
-                value={reason}
-                onChange={(e) => setReason(e.target.value)}
-                style={{
-                  width: '100%', minHeight: '80px', borderRadius: '8px',
-                  padding: '10px', border: '3px solid var(--outline)',
-                  fontFamily: 'inherit', fontWeight: 'bold'
-                }}
-              />
+            <div className="wooden-sign" style={{ marginTop: '20px', fontSize: '0.9rem' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+                <Doosee className="mini" style={{ width: '50px', height: '50px', borderWidth: '4px' }} />
+                <div>
+                  <strong>{t.pendapatDoosee}</strong>
+                  <p style={{ margin: '5px 0 0', fontSize: '1rem', lineHeight: '1.4' }}>
+                    "{active.opinion[lang]}"
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
