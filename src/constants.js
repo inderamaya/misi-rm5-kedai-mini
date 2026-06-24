@@ -61,6 +61,42 @@ export const items = [
     good: 1,
     tag: { bm: 'KEHENDAK', en: 'WANT' }
   },
+  {
+    id: 'apple',
+    name: { bm: 'Epal', en: 'Apple' },
+    price: 1,
+    type: 'apple',
+    need: 3,
+    good: 3,
+    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+  },
+  {
+    id: 'pencil',
+    name: { bm: 'Pensil', en: 'Pencil' },
+    price: 1,
+    type: 'pencil',
+    need: 2,
+    good: 2,
+    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+  },
+  {
+    id: 'eraser',
+    name: { bm: 'Pemadam', en: 'Eraser' },
+    price: 1,
+    type: 'eraser',
+    need: 2,
+    good: 2,
+    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+  },
+  {
+    id: 'biscuits',
+    name: { bm: 'Biskut', en: 'Biscuits' },
+    price: 2,
+    type: 'biscuits',
+    need: 2,
+    good: 2,
+    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+  },
 ];
 
 export const flowSteps = [
