@@ -4,7 +4,7 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.goto('http://localhost:5173');
 
   // Home Screen
-  await expect(page.locator('h1')).toContainText('Dunia Syiling RM5');
+  await expect(page.locator('h1')).toContainText('Dunia Kedai Mini');
   await page.screenshot({ path: 'full_flow_1_home.png' });
 
   // Go to Intro
@@ -13,8 +13,8 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.screenshot({ path: 'full_flow_2_intro.png' });
 
   // Go to Level 1: Money
-  await page.click('button:has-text("Seterusnya: Kenali RM5")');
-  await expect(page.locator('h1')).toContainText('Kenali RM5');
+  await page.click('button:has-text("Seterusnya: Kenali Wang")');
+  await expect(page.locator('h1')).toContainText('Kenali Wang');
   await page.click('button:has-text("RM5")', { force: true }); // Select RM5
   await page.screenshot({ path: 'full_flow_3_money.png' });
 

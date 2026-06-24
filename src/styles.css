@@ -515,6 +515,39 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   border-radius: 50%;
 }
 
+.doosee-bubble {
+  position: absolute;
+  top: -40px;
+  right: -50px;
+  background: var(--white);
+  border: 3px solid var(--outline);
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-weight: 900;
+  font-size: 0.9rem;
+  color: var(--outline);
+  white-space: nowrap;
+  animation: float-bubble 2s ease-in-out infinite alternate;
+}
+.doosee-bubble::after {
+  content: '';
+  position: absolute;
+  bottom: -10px;
+  left: 10px;
+  border-width: 10px 10px 0 0;
+  border-style: solid;
+  border-color: var(--outline) transparent transparent transparent;
+}
+
+@keyframes float-bubble {
+  from { transform: translateY(0) rotate(-5deg); }
+  to { transform: translateY(-5px) rotate(5deg); }
+}
+
+.didi-duit.mini .doosee-bubble {
+  display: none;
+}
+
 /* RESPONSIVE OVERRIDES */
 @media (max-width: 850px) {
   .shopLayout, .wiseLayout { grid-template-columns: 1fr; }

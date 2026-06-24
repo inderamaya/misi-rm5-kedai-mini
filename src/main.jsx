@@ -7,14 +7,13 @@ import { BUDGET, moneyChoices, items, flowSteps, quiz } from './constants';
 const translations = {
   bm: {
     home: "Utama",
-    title: "DUNIA SYILING RM5",
-    subtitle: "Misi Kedai Mini: Pilih, Kira, Bayar!",
-    audio: "Audio",
-    dengarArahan: "Dengar Arahan",
+    suara: "Suara",
+    title: "DUNIA KEDAI MINI",
+    subtitle: "Misi Syiling Doosee",
     mulakanMisi: "Mulakan Misi",
     dunia1: "DUNIA 1: Pintu Masuk",
-    selamatDatang: "Selamat Datang ke Dunia Syiling RM5!",
-    kenaliRM5: "Kenali RM5",
+    selamatDatang: "Selamat Datang ke Dunia Kedai Mini!",
+    kenaliRM5: "Kenali Wang",
     petaAlir: "Peta Alir",
     misiKedai: "Misi Kedai",
     pilihanBijak: "Pilihan Bijak",
@@ -30,12 +29,12 @@ const translations = {
     seterusnya: "Seterusnya",
     tahap1: "TAHAP 1",
     klikRM5: "Klik wang yang bernilai RM5.",
-    hebatRM5: "Hebat! Ini RM5 untuk misi hari ini.",
+    hebatRM5: "Doosee bangga dengan kamu! Ini RM5 untuk misi hari ini.",
     cubaLagiRM5: "Cuba lagi. Cari wang yang tertulis RM5.",
     tahap2: "TAHAP 2",
     petaAlirTitle: "Peta Alir Pembeli Bijak",
     tekanLangkah: "Tekan setiap langkah mengikut urutan (1 hingga 6).",
-    levelClear: "Level Clear! Kamu sudah ikut peta alir dengan betul.",
+    levelClear: "Hebat! Doosee gembira kamu ikut peta alir dengan betul.",
     tahap3: "TAHAP 3",
     kedaiMini: "Kedai Mini Ajaib",
     pilihKeperluan: "Kamu ada RM5. Pilih barang keperluan dahulu.",
@@ -43,7 +42,7 @@ const translations = {
     pilihBarang: "Pilih barang...",
     wangTidakCukup: "Wang tidak cukup!",
     pilihBarangKeperluan: "Pilih barang keperluan.",
-    bijakWangCukup: "Bijak! Wang cukup.",
+    bijakWangCukup: "Bijak! Doosee kata wang kamu cukup.",
     tahap4: "TAHAP 4",
     cartaBijak: "Carta Bijak",
     bandingBarang: "Bandingkan barang menggunakan bintang.",
@@ -58,19 +57,12 @@ const translations = {
     skorAnda: "Skor Anda",
     tamatMisi: "Tamat Misi",
     istana: "Istana Pembeli Bijak",
-    misiBerjaya: "TAHNIAH! MISI BERJAYA!",
-    menjadiPembeliBijak: "Kamu telah menjadi Pembeli Bijak di Dunia Syiling RM5.",
+    misiBerjaya: "TAHNIAH! DOOSEE KATA KAMU BERJAYA!",
+    menjadiPembeliBijak: "Doosee bangga kamu telah menjadi Pembeli Bijak di Dunia Kedai Mini.",
     koleksiLencana: "Koleksi Lencana Anda:",
     kembaliMula: "Kembali Ke Mula",
     simpanPDF: "Simpan PDF",
     rasional: "Rasional Reka Bentuk Digital",
-    introSpeak: "Selamat datang ke Dunia Syiling RM5! Mari belajar cara memilih barang, mengira wang, dan membuat keputusan bijak.",
-    introText: "Kamu ada RM5. Tugas kamu ialah memilih barang yang sesuai. Pastikan wang cukup dan kira baki.",
-    moneySpeak: "Klik wang yang bernilai RM5. Lihat simbol dan nombor pada wang.",
-    flowSpeak: "Peta alir membantu kita menyusun langkah membeli barang. Tekan langkah satu hingga enam.",
-    shopSpeak: "Pilih barang. Pastikan jumlah tidak lebih daripada RM5. Utamakan barang keperluan.",
-    wiseSpeak: "Gunakan carta bijak untuk menilai barang. Lihat bintang untuk harga, keperluan, dan manfaat.",
-    quizSpeak: "Jawab semua soalan kuiz. Pilih jawapan yang paling bijak.",
     tahniahLencana: "Tahniah! Anda mendapat",
     tahniahLencanaShort: "Tahniah! Anda telah memenangi",
     resetConfirm: "Adakah anda pasti mahu set semula semua kemajuan?",
@@ -80,19 +72,18 @@ const translations = {
       "Lencana Peta Alir": "Lencana Peta Alir",
       "Pembeli Bijak": "Pembeli Bijak",
       "Lencana Carta Bijak": "Lencana Carta Bijak",
-      "Juara Dunia Syiling RM5": "Juara Dunia Syiling RM5"
+      "Juara Dunia Syiling RM5": "Juara Dunia Kedai Mini"
     }
   },
   en: {
     home: "Home",
-    title: "RM5 COIN WORLD",
-    subtitle: "Mini Shop Mission: Choose, Count, Pay!",
-    audio: "Audio",
-    dengarArahan: "Listen",
+    suara: "Sound",
+    title: "MINI SHOP WORLD",
+    subtitle: "Doosee Coin Mission",
     mulakanMisi: "Start Mission",
     dunia1: "WORLD 1: Entrance",
-    selamatDatang: "Welcome to the RM5 Coin World!",
-    kenaliRM5: "Identify RM5",
+    selamatDatang: "Welcome to Mini Shop World!",
+    kenaliRM5: "Identify Money",
     petaAlir: "Flow Map",
     misiKedai: "Shop Mission",
     pilihanBijak: "Wise Choice",
@@ -108,12 +99,12 @@ const translations = {
     seterusnya: "Next",
     tahap1: "LEVEL 1",
     klikRM5: "Click the money that is worth RM5.",
-    hebatRM5: "Great! This is RM5 for today's mission.",
+    hebatRM5: "Doosee is proud of you! This is RM5 for today's mission.",
     cubaLagiRM5: "Try again. Find the money with RM5 written on it.",
     tahap2: "LEVEL 2",
     petaAlirTitle: "Wise Buyer Flow Map",
     tekanLangkah: "Press each step in order (1 to 6).",
-    levelClear: "Level Clear! You followed the flow map correctly.",
+    levelClear: "Great! Doosee is happy you followed the flow map correctly.",
     tahap3: "LEVEL 3",
     kedaiMini: "Magic Mini Shop",
     pilihKeperluan: "You have RM5. Choose needs first.",
@@ -121,7 +112,7 @@ const translations = {
     pilihBarang: "Choose items...",
     wangTidakCukup: "Not enough money!",
     pilihBarangKeperluan: "Choose needed items.",
-    bijakWangCukup: "Wise! Enough money.",
+    bijakWangCukup: "Wise! Doosee says you have enough money.",
     tahap4: "LEVEL 4",
     cartaBijak: "Wise Chart",
     bandingBarang: "Compare items using stars.",
@@ -136,19 +127,12 @@ const translations = {
     skorAnda: "Your Score",
     tamatMisi: "Finish Mission",
     istana: "Wise Buyer Palace",
-    misiBerjaya: "CONGRATULATIONS! MISSION SUCCESS!",
-    menjadiPembeliBijak: "You have become a Wise Buyer in RM5 Coin World.",
+    misiBerjaya: "CONGRATULATIONS! DOOSEE SAYS MISSION SUCCESS!",
+    menjadiPembeliBijak: "Doosee is proud you have become a Wise Buyer in Mini Shop World.",
     koleksiLencana: "Your Badge Collection:",
     kembaliMula: "Back to Start",
     simpanPDF: "Save PDF",
     rasional: "Digital Design Rationale",
-    introSpeak: "Welcome to RM5 Coin World! Let's learn how to choose items, count money, and make wise decisions.",
-    introText: "You have RM5. Your task is to choose the right items. Make sure the money is enough and calculate the balance.",
-    moneySpeak: "Click the money worth RM5. Look at the symbols and numbers on the money.",
-    flowSpeak: "The flow map helps us arrange the steps of buying items. Press steps one to six.",
-    shopSpeak: "Choose items. Ensure the total is not more than RM5. Prioritize needed items.",
-    wiseSpeak: "Use the wise chart to evaluate items. Look at the stars for price, necessity, and benefit.",
-    quizSpeak: "Answer all quiz questions. Choose the wisest answer.",
     tahniahLencana: "Congratulations! You got",
     tahniahLencanaShort: "Congratulations! You have won",
     resetConfirm: "Are you sure you want to reset all progress?",
@@ -158,23 +142,10 @@ const translations = {
       "Lencana Peta Alir": "Flow Map Badge",
       "Pembeli Bijak": "Wise Buyer",
       "Lencana Carta Bijak": "Wise Chart Badge",
-      "Juara Dunia Syiling RM5": "RM5 Coin World Champion"
+      "Juara Dunia Syiling RM5": "Mini Shop World Champion"
     }
   }
 };
-
-function speak(text, enabled = true, lang = 'bm', onStart, onEnd) {
-  if (!enabled) return;
-  if (!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang === 'bm' ? 'ms-MY' : 'en-US';
-  utterance.rate = 0.86;
-  utterance.pitch = 1.05;
-  if (onStart) utterance.onstart = onStart;
-  if (onEnd) utterance.onend = onEnd;
-  window.speechSynthesis.speak(utterance);
-}
 
 function loadProgress() {
   try {
@@ -186,6 +157,20 @@ function loadProgress() {
 
 function saveProgress(progress) {
   localStorage.setItem('misi-rm5-progress', JSON.stringify(progress));
+}
+
+const SOUNDS = {
+  click: 'https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3',
+  correct: 'https://assets.mixkit.co/active_storage/sfx/270/270-preview.mp3',
+  wrong: 'https://assets.mixkit.co/active_storage/sfx/2688/2688-preview.mp3',
+  pageChange: 'https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3',
+};
+
+function playSFX(type, enabled) {
+  if (!enabled || !SOUNDS[type]) return;
+  const audio = new Audio(SOUNDS[type]);
+  audio.volume = 0.5;
+  audio.play().catch(() => {});
 }
 
 // Custom SVG Icons
@@ -224,8 +209,8 @@ const Icons = {
   ),
   banana: () => (
     <svg width="50" height="50" viewBox="0 0 50 50">
-      <path d="M10 10 Q40 10 40 40" fill="none" stroke="#FFD447" strokeWidth="6" strokeLinecap="round" />
-      <path d="M10 10 Q40 10 40 40" fill="none" stroke="#1C1C1C" strokeWidth="1" />
+      <path d="M15 10 Q25 5 35 15 Q45 25 35 40 Q25 45 15 35 Q5 25 15 10" fill="#FFD447" stroke="#1C1C1C" strokeWidth="3" />
+      <path d="M15 10 Q20 15 25 25" fill="none" stroke="#1C1C1C" strokeWidth="1" />
     </svg>
   ),
   milk: () => (
@@ -244,8 +229,39 @@ const Icons = {
   ),
   toy: () => (
     <svg width="50" height="50" viewBox="0 0 50 50">
-      <circle cx="25" cy="20" r="12" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
-      <circle cx="25" cy="40" r="8" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
+      <rect x="10" y="25" width="15" height="15" fill="#E9443A" stroke="#1C1C1C" strokeWidth="2" />
+      <rect x="25" y="25" width="15" height="15" fill="#5BCBFF" stroke="#1C1C1C" strokeWidth="2" />
+      <rect x="17" y="10" width="15" height="15" fill="#FFD447" stroke="#1C1C1C" strokeWidth="2" />
+    </svg>
+  ),
+  apple: () => (
+    <svg width="50" height="50" viewBox="0 0 50 50">
+      <circle cx="25" cy="28" r="15" fill="#E9443A" stroke="#1C1C1C" strokeWidth="3" />
+      <path d="M25 13 L25 8" stroke="#8B5A2B" strokeWidth="3" />
+      <path d="M25 13 L30 10" fill="#3CB043" stroke="#1C1C1C" strokeWidth="1" />
+    </svg>
+  ),
+  pencil: () => (
+    <svg width="50" height="50" viewBox="0 0 50 50">
+      <rect x="20" y="10" width="10" height="30" fill="#FFD447" stroke="#1C1C1C" strokeWidth="2" />
+      <path d="M20 40 L25 48 L30 40 Z" fill="#FFF6D8" stroke="#1C1C1C" strokeWidth="2" />
+      <circle cx="25" cy="48" r="2" fill="#1C1C1C" />
+      <rect x="20" y="10" width="10" height="5" fill="#E9443A" stroke="#1C1C1C" strokeWidth="2" />
+    </svg>
+  ),
+  eraser: () => (
+    <svg width="50" height="50" viewBox="0 0 50 50">
+      <rect x="10" y="20" width="30" height="15" rx="2" fill="#FFC0CB" stroke="#1C1C1C" strokeWidth="3" transform="rotate(-15, 25, 27.5)" />
+    </svg>
+  ),
+  biscuits: () => (
+    <svg width="50" height="50" viewBox="0 0 50 50">
+      <circle cx="25" cy="25" r="18" fill="#D96B32" stroke="#1C1C1C" strokeWidth="3" />
+      <circle cx="18" cy="18" r="2" fill="#1C1C1C" />
+      <circle cx="32" cy="18" r="2" fill="#1C1C1C" />
+      <circle cx="25" cy="32" r="2" fill="#1C1C1C" />
+      <circle cx="18" cy="32" r="2" fill="#1C1C1C" />
+      <circle cx="32" cy="32" r="2" fill="#1C1C1C" />
     </svg>
   ),
   look_money: () => <Coins size={32} />,
@@ -256,27 +272,16 @@ const Icons = {
   pay: () => <ArrowRight size={32} />,
 };
 
-function DidiDuit({ className = "" }) {
+function Doosee({ className = "", style = {} }) {
   return (
-    <div className={`didi-duit bounce ${className}`}>
+    <div className={`didi-duit bounce ${className}`} style={style}>
+      <div className="doosee-bubble">Doosee!</div>
       <div className="didi-eyes">
         <div className="didi-eye"></div>
         <div className="didi-eye"></div>
       </div>
       <div className="didi-smile"></div>
     </div>
-  );
-}
-
-function AudioButton({ text, soundOn, lang, speaking, setSpeaking, t }) {
-  return (
-    <button
-      className={`iconBtn ${speaking ? 'speaking' : ''}`}
-      onClick={() => speak(text, soundOn, lang, () => setSpeaking(true), () => setSpeaking(false))}
-      aria-label={t.dengarArahan}
-    >
-      <Volume2 size={20} /> {t.dengarArahan}
-    </button>
   );
 }
 
@@ -292,16 +297,16 @@ function StarRating({ label, value }) {
 function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
   return (
     <header className="topbar">
-      <button className="homeBtn" onClick={() => setPage('home')}><Home size={18} /> {t.home}</button>
+      <button className="homeBtn" onClick={() => { playSFX('click', soundOn); setPage('home'); }}><Home size={18} /> {t.home}</button>
       <div className="brand">
-        <div className="coin-icon">RM5</div>
+        <Doosee className="mini" style={{ width: '40px', height: '40px', borderWidth: '3px', animation: 'none' }} />
         <div>
           <strong>{t.title}</strong>
           <small>{t.subtitle}</small>
         </div>
       </div>
       <div className="tools">
-        <button className="miniBtn" onClick={() => setSoundOn(!soundOn)}>{soundOn ? <Volume2 size={17}/> : <VolumeX size={17}/>} {t.audio}</button>
+        <button className="miniBtn" onClick={() => setSoundOn(!soundOn)}>{soundOn ? <Volume2 size={17}/> : <VolumeX size={17}/>} {t.suara}</button>
         <button className="miniBtn" onClick={() => setLang(lang === 'bm' ? 'en' : 'bm')}>
           {lang === 'bm' ? 'English' : 'B. Melayu'}
         </button>
@@ -310,7 +315,7 @@ function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
   );
 }
 
-function HomeScreen({ setPage, soundOn, lang, progress, speaking, setSpeaking, t }) {
+function HomeScreen({ setPage, soundOn, lang, progress, t }) {
   return (
     <main>
       <section className="heroCard castlePanel">
@@ -319,31 +324,30 @@ function HomeScreen({ setPage, soundOn, lang, progress, speaking, setSpeaking, t
           <h1>{t.selamatDatang}</h1>
           <p style={{fontSize: '1.2rem', fontWeight: '900', marginBottom: '20px'}}>{t.subtitle}</p>
           <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-            <button className="primaryBtn brick-style" onClick={() => setPage('intro')}><Sparkles size={20}/> {t.mulakanMisi}</button>
-            <AudioButton text={t.introSpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+            <button className="primaryBtn brick-style" onClick={() => { playSFX('click', soundOn); setPage('intro'); }}><Sparkles size={20}/> {t.mulakanMisi}</button>
           </div>
         </div>
-        <DidiDuit />
+        <Doosee />
       </section>
 
       <section className="objectiveGrid">
-        <button className="level-card" onClick={() => setPage('money')}>
+        <button className="level-card" onClick={() => { playSFX('click', soundOn); setPage('money'); }}>
           <div className="lvl-icon"><Coins size={30} /></div>
           <span>{t.kenaliRM5}</span>
         </button>
-        <button className="level-card" onClick={() => setPage('flow')}>
+        <button className="level-card" onClick={() => { playSFX('click', soundOn); setPage('flow'); }}>
           <div className="lvl-icon"><Map size={30} /></div>
           <span>{t.petaAlir}</span>
         </button>
-        <button className="level-card" onClick={() => setPage('shop')}>
+        <button className="level-card" onClick={() => { playSFX('click', soundOn); setPage('shop'); }}>
           <div className="lvl-icon"><ShoppingBasket size={30} /></div>
           <span>{t.misiKedai}</span>
         </button>
-        <button className="level-card" onClick={() => setPage('wise')}>
+        <button className="level-card" onClick={() => { playSFX('click', soundOn); setPage('wise'); }}>
           <div className="lvl-icon"><Brain size={30} /></div>
           <span>{t.pilihanBijak}</span>
         </button>
-        <button className="level-card" onClick={() => setPage('teacher')}>
+        <button className="level-card" onClick={() => { playSFX('click', soundOn); setPage('teacher'); }}>
           <div className="lvl-icon"><BookOpen size={30} /></div>
           <span>{t.panduanGuru}</span>
         </button>
@@ -356,7 +360,6 @@ function HomeScreen({ setPage, soundOn, lang, progress, speaking, setSpeaking, t
             <button
               key={b}
               className="medal bounce"
-              onClick={() => speak(`${t.tahniahLencana} ${t.badges[b] || b}`, soundOn, lang, () => setSpeaking(true), () => setSpeaking(false))}
               title={t.badges[b] || b}
               aria-label={`Badge: ${t.badges[b] || b}`}
             >
@@ -374,7 +377,7 @@ function HomeScreen({ setPage, soundOn, lang, progress, speaking, setSpeaking, t
   );
 }
 
-function IntroScreen({ setPage, soundOn, lang, speaking, setSpeaking, t }) {
+function IntroScreen({ setPage, soundOn, lang, t }) {
   return (
     <main>
       <section className="missionCard brick-panel">
@@ -392,15 +395,14 @@ function IntroScreen({ setPage, soundOn, lang, speaking, setSpeaking, t }) {
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-          <button className="primaryBtn" onClick={() => setPage('money')}>{t.seterusnya}: {t.kenaliRM5} <ArrowRight /></button>
-          <AudioButton text={t.introText} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" onClick={() => { playSFX('click', soundOn); setPage('money'); }}>{t.seterusnya}: {t.kenaliRM5} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
 
-function MoneyScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking, t }) {
+function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [chosen, setChosen] = useState(null);
   const correct = chosen === 'rm5';
   function award() {
@@ -420,7 +422,11 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeakin
 
         <div className="moneyGrid">
           {moneyChoices.map(m => (
-            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''}`} onClick={() => setChosen(m.id)}>
+            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''}`} onClick={() => {
+              setChosen(m.id);
+              if (m.id === 'rm5') playSFX('correct', soundOn);
+              else playSFX('wrong', soundOn);
+            }}>
               <div className="coin-block" style={{background: m.id === 'rm5' ? 'var(--coin)' : '#ccc'}}>
                 {Icons[m.type]()}
               </div>
@@ -436,15 +442,14 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeakin
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!correct} onClick={() => setPage('flow')}>{t.seterusnya}: {t.petaAlir} <ArrowRight /></button>
-          <AudioButton text={t.moneySpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" disabled={!correct} onClick={() => { playSFX('click', soundOn); setPage('flow'); }}>{t.seterusnya}: {t.petaAlir} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
 
-function FlowScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking, t }) {
+function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [done, setDone] = useState([]);
   const complete = done.length === flowSteps.length;
 
@@ -472,7 +477,12 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
                 <button
                   className={`stepping-stone ${isActive ? 'active' : ''}`}
                   onClick={() => {
-                    if (idx === done.length) setDone(prev => [...prev, idx]);
+                    if (idx === done.length) {
+                      setDone(prev => [...prev, idx]);
+                      playSFX('correct', soundOn);
+                    } else {
+                      playSFX('wrong', soundOn);
+                    }
                   }}
                 >
                   <div className="step-num">{idx + 1}</div>
@@ -488,21 +498,20 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
         {complete && (
           <div className="toast success" aria-live="polite">
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px'}}>
-              <DidiDuit />
+            <Doosee />
               <span>{t.levelClear}</span>
             </div>
           </div>
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!complete} onClick={() => setPage('shop')}>{t.seterusnya}: {t.misiKedai} <ArrowRight /></button>
-          <AudioButton text={t.flowSpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" disabled={!complete} onClick={() => { playSFX('click', soundOn); setPage('shop'); }}>{t.seterusnya}: {t.misiKedai} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
-function ShopScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking, t }) {
+function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [basket, setBasket] = useState([]);
   const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
   const balance = BUDGET - total;
@@ -548,9 +557,12 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
             <h2 style={{marginTop: 0}}>{t.troliSaya} 🛒</h2>
             {basket.length === 0 ? <p>{t.pilihBarang}</p> : basket.map(id => {
               const item = items.find(i => i.id === id);
-              return <div key={id} style={{display: 'flex', justifyContent: 'space-between', marginBottom: '5px'}}>
-                <span>{item.name[lang]}</span>
-                <span>RM{item.price}</span>
+              return <div key={id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
+                <span>{item.name[lang]} (RM{item.price})</span>
+                <button
+                  onClick={() => { playSFX('click', soundOn); toggleItem(id); }}
+                  style={{background: 'var(--red)', color: 'var(--white)', border: '2px solid var(--outline)', borderRadius: '5px', cursor: 'pointer', padding: '2px 8px', fontWeight: 'bold'}}
+                >X</button>
               </div>
             })}
             <hr style={{borderColor: 'rgba(255,255,255,0.3)'}} />
@@ -572,15 +584,14 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" disabled={!excellent} onClick={() => setPage('wise')}>{t.seterusnya}: {t.pilihanBijak} <ArrowRight /></button>
-          <AudioButton text={t.shopSpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" disabled={!excellent} onClick={() => { playSFX('click', soundOn); setPage('wise'); }}>{t.seterusnya}: {t.pilihanBijak} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
 
-function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking, t }) {
+function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [reason, setReason] = useState("");
   const active = items[activeIdx];
@@ -602,7 +613,7 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, speaking, setSp
         <div className="wiseLayout">
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px'}}>
             {items.map((item, idx) => (
-              <button key={item.id} className={`platform-card ${activeIdx === idx ? 'selected' : ''}`} onClick={() => setActiveIdx(idx)}>
+              <button key={item.id} className={`platform-card ${activeIdx === idx ? 'selected' : ''}`} onClick={() => { playSFX('click', soundOn); setActiveIdx(idx); }}>
                 {Icons[item.type]()}
                 <small>{item.name[lang]}</small>
               </button>
@@ -639,16 +650,26 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, speaking, setSp
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
-          <button className="primaryBtn" onClick={() => setPage('quiz')}>{t.seterusnya}: {t.kuiz} <ArrowRight /></button>
-          <AudioButton text={t.wiseSpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" onClick={() => { playSFX('click', soundOn); setPage('quiz'); }}>{t.seterusnya}: {t.kuiz} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
 
-function QuizScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking, t }) {
+function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [answers, setAnswers] = useState({});
+  const shuffledOptions = useMemo(() => {
+    return quiz.map(q => {
+      const opts = q.options[lang].map((text, index) => ({ text, index }));
+      for (let i = opts.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [opts[i], opts[j]] = [opts[j], opts[i]];
+      }
+      return opts;
+    });
+  }, [lang]);
+
   const answered = Object.keys(answers).length;
   const score = quiz.reduce((sum, q, idx) => sum + (answers[idx] === q.answer ? 1 : 0), 0);
   const complete = answered === quiz.length;
@@ -673,15 +694,20 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
             <div key={idx} className="quizCard brick-panel" style={{color: 'var(--outline)', background: 'var(--white)'}}>
               <h2 style={{fontSize: '1.2rem'}}>{idx + 1}. {q.q[lang]}</h2>
               <div style={{display: 'grid', gap: '10px', marginTop: '15px'}}>
-                {q.options[lang].map((opt, optIdx) => (
+                {shuffledOptions[idx].map((opt, optIdx) => (
                   <button
                     key={optIdx}
-                    className={`platform-card ${answers[idx] === optIdx ? 'selected' : ''}`}
-                    onClick={() => setAnswers(prev => ({...prev, [idx]: optIdx}))}
+                    className={`platform-card ${answers[idx] === opt.index ? 'selected' : ''}`}
+                    onClick={() => {
+                      playSFX('click', soundOn);
+                      setAnswers(prev => ({...prev, [idx]: opt.index}));
+                      if (opt.index === q.answer) playSFX('correct', soundOn);
+                      else playSFX('wrong', soundOn);
+                    }}
                     style={{flexDirection: 'row', justifyContent: 'flex-start', padding: '12px 20px'}}
                   >
                     <div style={{width: '30px', height: '30px', background: 'var(--outline)', color: 'var(--white)', borderRadius: '50%', display: 'grid', placeItems: 'center', marginRight: '15px'}}>{optIdx + 1}</div>
-                    {opt}
+                    {opt.text}
                   </button>
                 ))}
               </div>
@@ -701,15 +727,14 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, speaking, setSpeaking
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
-          <button className="primaryBtn" disabled={!complete} onClick={() => setPage('finish')}>{t.tamatMisi} <ArrowRight /></button>
-          <AudioButton text={t.quizSpeak} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />
+          <button className="primaryBtn" disabled={!complete} onClick={() => { playSFX('click', soundOn); setPage('finish'); }}>{t.tamatMisi} <ArrowRight /></button>
         </div>
       </section>
     </main>
   );
 }
 
-function FinishScreen({ setPage, progress, soundOn, lang, setSpeaking, t }) {
+function FinishScreen({ setPage, progress, soundOn, lang, t }) {
   return (
     <main>
       <div className="castle-container">
@@ -731,7 +756,6 @@ function FinishScreen({ setPage, progress, soundOn, lang, setSpeaking, t }) {
               <button
                 key={b}
                 className="medal bounce"
-                onClick={() => speak(`${t.tahniahLencanaShort} ${t.badges[b] || b}`, soundOn, lang, () => setSpeaking(true), () => setSpeaking(false))}
                 title={t.badges[b] || b}
                 style={{width: '120px', height: '120px', flexDirection: 'column'}}
                 aria-label={`Badge: ${t.badges[b] || b}`}
@@ -748,8 +772,8 @@ function FinishScreen({ setPage, progress, soundOn, lang, setSpeaking, t }) {
         </div>
 
         <div style={{display: 'flex', gap: '20px', justifyContent: 'center', marginTop: '40px'}}>
-          <button className="primaryBtn" onClick={() => setPage('home')}><Home /> {t.kembaliMula}</button>
-          <button className="secondaryBtn" onClick={() => window.print()}>{t.simpanPDF}</button>
+          <button className="primaryBtn" onClick={() => { playSFX('click', soundOn); setPage('home'); }}><Home /> {t.kembaliMula}</button>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); window.print(); }}>{t.simpanPDF}</button>
         </div>
       </div>
     </main>
@@ -856,7 +880,6 @@ function TeacherGuide({ setPage, lang, t }) {
 
 function App() {
   const [page, setPage] = useState('home');
-  const [speaking, setSpeaking] = useState(false);
   const [progress, setProgress] = useState(loadProgress);
   const [soundOn, setSoundOn] = useState(true);
   const [lang, setLang] = useState('bm');
@@ -864,6 +887,14 @@ function App() {
   const t = translations[lang];
 
   useEffect(() => saveProgress(progress), [progress]);
+
+  const lastPage = React.useRef(page);
+  useEffect(() => {
+    if (lastPage.current !== page) {
+      playSFX('pageChange', soundOn);
+      lastPage.current = page;
+    }
+  }, [page, soundOn]);
 
   const className = useMemo(() => [
     'appShell',
@@ -882,14 +913,14 @@ function App() {
       <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
       <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} lang={lang} setLang={setLang} t={t} />
       <div className="screen">
-        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} lang={lang} progress={progress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} lang={lang} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} speaking={speaking} setSpeaking={setSpeaking} t={t} />}
-        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} setSpeaking={setSpeaking} t={t} />}
+        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} lang={lang} progress={progress} t={t} />}
+        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} lang={lang} t={t} />}
+        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
+        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
+        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
+        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
+        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
+        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} t={t} />}
         {page === 'teacher' && <TeacherGuide setPage={setPage} lang={lang} t={t} />}
       </div>
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> {t.resetBtn}</button>
