@@ -14,7 +14,11 @@ export const items = [
     type: 'water',
     need: 3,
     good: 3,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Air mineral sangat penting untuk kesihatan dan harganya murah!',
+      en: 'Mineral water is very important for health and it\'s cheap!'
+    }
   },
   {
     id: 'bread',
@@ -23,7 +27,11 @@ export const items = [
     type: 'bread',
     need: 3,
     good: 3,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Roti memberi tenaga untuk kamu belajar dan bermain.',
+      en: 'Bread gives you energy to learn and play.'
+    }
   },
   {
     id: 'banana',
@@ -32,7 +40,11 @@ export const items = [
     type: 'banana',
     need: 3,
     good: 3,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Pisang adalah snek sihat yang penuh dengan vitamin.',
+      en: 'Banana is a healthy snack full of vitamins.'
+    }
   },
   {
     id: 'milk',
@@ -41,7 +53,11 @@ export const items = [
     type: 'milk',
     need: 2,
     good: 3,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Susu bagus untuk menguatkan tulang dan gigi kamu.',
+      en: 'Milk is good for strengthening your bones and teeth.'
+    }
   },
   {
     id: 'book',
@@ -50,7 +66,11 @@ export const items = [
     type: 'book',
     need: 2,
     good: 2,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Membaca buku membantu kamu menjadi lebih bijak!',
+      en: 'Reading books helps you become smarter!'
+    }
   },
   {
     id: 'toy',
@@ -59,7 +79,11 @@ export const items = [
     type: 'toy',
     need: 1,
     good: 1,
-    tag: { bm: 'KEHENDAK', en: 'WANT' }
+    tag: { bm: 'KEHENDAK', en: 'WANT' },
+    opinion: {
+      bm: 'Mainan memang seronok, tapi pastikan keperluan lain sudah cukup.',
+      en: 'Toys are fun, but make sure other needs are met first.'
+    }
   },
   {
     id: 'apple',
@@ -68,7 +92,11 @@ export const items = [
     type: 'apple',
     need: 3,
     good: 3,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Epal merah yang manis dan sangat baik untuk badan.',
+      en: 'Sweet red apple that is very good for your body.'
+    }
   },
   {
     id: 'pencil',
@@ -77,7 +105,11 @@ export const items = [
     type: 'pencil',
     need: 2,
     good: 2,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Pensil sangat berguna untuk kamu menulis dan melukis.',
+      en: 'Pencils are very useful for you to write and draw.'
+    }
   },
   {
     id: 'eraser',
@@ -86,7 +118,11 @@ export const items = [
     type: 'eraser',
     need: 2,
     good: 2,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Pemadam kecil ini membantu membetulkan tulisan kamu.',
+      en: 'This small eraser helps correct your writing.'
+    }
   },
   {
     id: 'biscuits',
@@ -95,7 +131,11 @@ export const items = [
     type: 'biscuits',
     need: 2,
     good: 2,
-    tag: { bm: 'KEPERLUAN', en: 'NEED' }
+    tag: { bm: 'KEPERLUAN', en: 'NEED' },
+    opinion: {
+      bm: 'Biskut yang sedap untuk alas perut kamu.',
+      en: 'Delicious biscuits to fill your stomach.'
+    }
   },
 ];
 

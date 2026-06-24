@@ -589,23 +589,50 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
     padding: 8px !important;
     font-size: 0.75rem !important;
   }
+  .screen {
+    padding: 10px 10px 120px;
+  }
   .heroCard, .missionCard, .progressBox, .basketPanel, .radarCard, .quizCard, .summaryList, .teacherGuide {
-    padding: var(--space-md) var(--space-sm);
+    padding: var(--space-sm);
+    border-width: 4px;
+    border-radius: 16px;
   }
   h1 {
     font-size: 1.5rem;
     text-align: center;
     -webkit-text-stroke: 1px var(--outline);
   }
+  h2 { font-size: 1.2rem; }
   .primaryBtn, .secondaryBtn {
-    padding: 12px 18px;
-    font-size: 1.1rem;
+    padding: 10px 16px;
+    font-size: 1rem;
+    border-width: 3px;
+    border-radius: 12px;
   }
   .objectiveGrid {
     grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
     gap: var(--space-sm);
   }
-  .didi-eyes { gap: 15px; }
-  .didi-eye { width: 8px; height: 8px; }
-  .didi-smile { width: 20px; height: 10px; }
+  .moneyGrid, .itemGrid, .flowPath, .quizGrid {
+    gap: var(--space-sm);
+  }
+  .platform-card {
+    padding: 12px;
+    font-size: 0.9rem;
+    border-width: 3px;
+  }
+  .didi-duit {
+    width: 60px;
+    height: 60px;
+    border-width: 4px;
+  }
+  .didi-eyes { gap: 10px; }
+  .didi-eye { width: 6px; height: 6px; }
+  .didi-smile { width: 15px; height: 8px; }
+  .doosee-bubble {
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    top: -25px;
+    right: -30px;
+  }
 }
