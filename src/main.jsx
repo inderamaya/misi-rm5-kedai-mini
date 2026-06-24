@@ -806,7 +806,7 @@ function TeacherGuide({ setPage, lang, t }) {
                   <li>Latihan berperingkat (scaffolded).</li>
                   <li>Tiada tekanan masa.</li>
                   <li>Peneguhan positif (Lencana).</li>
-                  <li>Sokongan audio (Read-aloud).</li>
+                  <li>Kesan bunyi interaktif (SFX).</li>
                 </>
               ) : (
                 <>
@@ -815,7 +815,7 @@ function TeacherGuide({ setPage, lang, t }) {
                   <li>Scaffolded practice.</li>
                   <li>No time pressure.</li>
                   <li>Positive reinforcement (Badges).</li>
-                  <li>Audio support (Read-aloud).</li>
+                  <li>Interactive sound effects (SFX).</li>
                 </>
               )}
             </ul>
@@ -845,14 +845,14 @@ function TeacherGuide({ setPage, lang, t }) {
             <ul style={{paddingLeft: '20px'}}>
               {lang === 'bm' ? (
                 <>
-                  <li>Memperoleh maklumat (Mengenal RM5).</li>
+                  <li>Memperoleh maklumat (Mengenal wang).</li>
                   <li>Mengurus maklumat (Peta Alir).</li>
                   <li>Memproses maklumat (Kiraan harga/baki).</li>
                   <li>Membuat keputusan (Pilihan bijak).</li>
                 </>
               ) : (
                 <>
-                  <li>Acquiring information (Identifying RM5).</li>
+                  <li>Acquiring information (Identifying money).</li>
                   <li>Managing information (Flow Map).</li>
                   <li>Processing information (Price/balance calculation).</li>
                   <li>Decision making (Wise choice).</li>
