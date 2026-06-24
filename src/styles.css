@@ -14,6 +14,10 @@
   --white: #FFFFFF;
   --ground-dirt: #8B5A2B;
   --shadow: 0 8px 0 var(--outline);
+  --space-xs: 8px;
+  --space-sm: 16px;
+  --space-md: 24px;
+  --space-lg: 32px;
   font-family: 'Poppins', sans-serif;
 }
 
@@ -33,13 +37,6 @@ body {
   flex-direction: column;
   position: relative;
   background-color: var(--sky);
-  background-image:
-    radial-gradient(circle at 20% 20%, #fff 0, #fff 40px, transparent 40px),
-    radial-gradient(circle at 25% 18%, #fff 0, #fff 50px, transparent 50px),
-    radial-gradient(circle at 30% 20%, #fff 0, #fff 40px, transparent 40px),
-    radial-gradient(circle at 70% 30%, #fff 0, #fff 35px, transparent 35px),
-    radial-gradient(circle at 75% 28%, #fff 0, #fff 45px, transparent 45px),
-    radial-gradient(circle at 80% 30%, #fff 0, #fff 35px, transparent 35px);
 }
 
 /* Ground */
@@ -99,6 +96,18 @@ body {
 .brand strong { font-size: 1.5rem; color: var(--red); -webkit-text-stroke: 1px var(--outline); }
 .brand small { display: block; font-weight: bold; color: var(--sky-dark); }
 
+.coin-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--coin);
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
 .tools { display: flex; gap: 8px; flex-wrap: wrap; }
 
 .homeBtn, .miniBtn, .iconBtn, .resetBtn {
@@ -125,7 +134,7 @@ body {
   z-index: 20;
   width: min(1000px, 94vw);
   margin: 0 auto;
-  padding: 40px 0 120px;
+  padding: var(--space-md) var(--space-sm) 120px;
 }
 
 /* Panels */
@@ -134,8 +143,8 @@ body {
   border: 6px solid var(--outline);
   border-radius: 24px;
   box-shadow: var(--shadow);
-  padding: 30px;
-  margin-bottom: 30px;
+  padding: var(--space-lg);
+  margin-bottom: var(--space-lg);
 }
 
 /* Brick Style */
@@ -158,26 +167,26 @@ body {
 }
 
 h1 {
-  font-size: clamp(2rem, 6vw, 3.5rem);
-  line-height: 1.1;
-  margin: 10px 0;
+  font-size: clamp(1.4rem, 8vw, 3.5rem);
+  line-height: 1.2;
+  margin: var(--space-xs) 0;
   color: var(--red);
   -webkit-text-stroke: 2px var(--outline);
   text-shadow: 4px 4px 0 var(--white);
 }
 
-h2 { font-size: 1.8rem; margin: 15px 0; }
+h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
 
 .badge-label {
   display: inline-block;
   background: var(--sky-dark);
   color: var(--white);
-  padding: 8px 16px;
+  padding: var(--space-xs) var(--space-sm);
   border-radius: 12px;
   border: 4px solid var(--outline);
   font-weight: 900;
   text-transform: uppercase;
-  margin-bottom: 15px;
+  margin-bottom: var(--space-sm);
 }
 
 .primaryBtn, .secondaryBtn {
@@ -251,11 +260,11 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 /* Grids */
 .moneyGrid, .itemGrid, .flowPath, .quizGrid {
   display: grid;
-  gap: 32px;
-  margin: 30px 0;
+  gap: var(--space-lg);
+  margin: var(--space-lg) 0;
 }
-.moneyGrid { grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); }
-.itemGrid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); }
+.moneyGrid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
+.itemGrid { grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); }
 
 .platform-card {
   background: var(--white);
@@ -283,8 +292,8 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
   padding: 40px 0;
 }
 .stepping-stone {
-  width: 160px;
-  height: 160px;
+  width: clamp(120px, 40vw, 160px);
+  height: clamp(120px, 40vw, 160px);
   background: #aaa;
   border: 6px solid var(--outline);
   border-radius: 24px;
@@ -292,13 +301,14 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 15px;
+  padding: var(--space-sm);
   text-align: center;
   font-weight: 900;
   color: var(--white);
   box-shadow: 0 10px 0 var(--outline);
   cursor: pointer;
   transition: all 0.2s;
+  font-size: 0.9rem;
 }
 .stepping-stone.active { background: var(--leaf); transform: translateY(-10px); box-shadow: 0 20px 0 var(--outline); }
 .stepping-stone .step-num { font-size: 2rem; color: var(--coin); -webkit-text-stroke: 1px var(--outline); }
@@ -334,8 +344,8 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 
 /* Feedback */
 .toast {
-  margin-top: 20px;
-  padding: 15px 25px;
+  margin-top: var(--space-sm);
+  padding: var(--space-sm) var(--space-md);
   border: 5px solid var(--outline);
   border-radius: 20px;
   font-weight: 900;
@@ -348,11 +358,11 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 /* Castle / Flag */
 .castle-container {
   text-align: center;
-  padding: 40px;
+  padding: var(--space-lg);
   background: linear-gradient(var(--sky), var(--cream));
   border-radius: 40px;
   border: 8px solid var(--outline);
-  margin-top: 40px;
+  margin-top: var(--space-lg);
 }
 .flag-pole {
   width: 10px;
@@ -406,27 +416,22 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
   transition: none !important;
 }
 
-@media (max-width: 850px) {
-  .shopLayout, .wiseLayout, .castlePanel { grid-template-columns: 1fr; }
-  .screen { padding-bottom: 160px; }
-  .hills { display: none; }
-}
-
 .objectiveGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 32px;
-  margin-bottom: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
 }
+
 .level-card {
   background: var(--white);
   border: 4px solid var(--outline);
   border-radius: 12px;
-  padding: 24px;
+  padding: var(--space-md);
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 15px;
+  gap: var(--space-sm);
   cursor: pointer;
   box-shadow: 6px 6px 0 var(--outline);
   font-weight: 900;
@@ -476,4 +481,98 @@ h2 { font-size: 1.8rem; margin: 15px 0; }
 .speaking {
   background: var(--leaf) !important;
   border-color: var(--outline) !important;
+}
+
+.didi-duit {
+  width: clamp(80px, 20vw, 100px);
+  height: clamp(80px, 20vw, 100px);
+  background: var(--coin);
+  border: 6px solid var(--outline);
+  border-radius: 50%;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: inset -6px -6px 0 rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+.didi-eyes {
+  display: flex;
+  gap: 20px;
+}
+.didi-eye {
+  width: 10px;
+  height: 10px;
+  background: var(--outline);
+  border-radius: 50%;
+}
+.didi-smile {
+  position: absolute;
+  bottom: 25%;
+  width: 30px;
+  height: 15px;
+  border-bottom: 4px solid var(--outline);
+  border-radius: 50%;
+}
+
+/* RESPONSIVE OVERRIDES */
+@media (max-width: 850px) {
+  .shopLayout, .wiseLayout { grid-template-columns: 1fr; }
+  .castlePanel {
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    gap: var(--space-md);
+  }
+  .screen { padding-bottom: 160px; }
+  .hills { display: none; }
+}
+
+@media (max-width: 600px) {
+  .topbar {
+    padding: 4px;
+    gap: 4px;
+  }
+  .brand strong {
+    font-size: 0.9rem;
+  }
+  .brand small {
+    display: none;
+  }
+  .brand .coin-icon {
+    display: none;
+  }
+  .homeBtn, .miniBtn, .iconBtn, .resetBtn {
+    padding: 4px 6px;
+    font-size: 0.75rem;
+    gap: 2px;
+  }
+  .brand {
+    gap: 4px;
+  }
+  .resetBtn {
+    bottom: 15px !important;
+    right: 15px !important;
+    padding: 8px !important;
+    font-size: 0.75rem !important;
+  }
+  .heroCard, .missionCard, .progressBox, .basketPanel, .radarCard, .quizCard, .summaryList, .teacherGuide {
+    padding: var(--space-md) var(--space-sm);
+  }
+  h1 {
+    font-size: 1.5rem;
+    text-align: center;
+    -webkit-text-stroke: 1px var(--outline);
+  }
+  .primaryBtn, .secondaryBtn {
+    padding: 12px 18px;
+    font-size: 1.1rem;
+  }
+  .objectiveGrid {
+    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+    gap: var(--space-sm);
+  }
+  .didi-eyes { gap: 15px; }
+  .didi-eye { width: 8px; height: 8px; }
+  .didi-smile { width: 20px; height: 10px; }
 }
