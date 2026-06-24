@@ -593,34 +593,66 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
     padding: 10px 10px 120px;
   }
   .heroCard, .missionCard, .progressBox, .basketPanel, .radarCard, .quizCard, .summaryList, .teacherGuide {
-    padding: var(--space-sm);
+    padding: 12px;
     border-width: 4px;
     border-radius: 16px;
+    margin-bottom: var(--space-sm);
   }
   h1 {
-    font-size: 1.5rem;
+    font-size: 1.4rem;
     text-align: center;
     -webkit-text-stroke: 1px var(--outline);
   }
-  h2 { font-size: 1.2rem; }
+  h2 { font-size: 1.1rem; }
   .primaryBtn, .secondaryBtn {
-    padding: 10px 16px;
-    font-size: 1rem;
-    border-width: 3px;
-    border-radius: 12px;
-  }
-  .objectiveGrid {
-    grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-    gap: var(--space-sm);
-  }
-  .moneyGrid, .itemGrid, .flowPath, .quizGrid {
-    gap: var(--space-sm);
-  }
-  .platform-card {
-    padding: 12px;
+    padding: 8px 14px;
     font-size: 0.9rem;
     border-width: 3px;
+    border-radius: 12px;
+    box-shadow: 0 4px 0 var(--outline);
   }
+  .teacherGuide h1 { font-size: 1.2rem; }
+  .teacherGuide h2 { font-size: 1rem; margin: 8px 0; }
+  .teacherGuide ul { padding-left: 15px; margin: 0; }
+  .teacherGuide li { font-size: 0.8rem; margin-bottom: 2px; }
+  .objectiveGrid {
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 10px;
+  }
+  .level-card { padding: 10px; gap: 8px; }
+  .level-card .lvl-icon { width: 40px; height: 40px; }
+  .level-card .lvl-icon svg { width: 20px; height: 20px; }
+
+  .moneyGrid, .itemGrid, .flowPath, .quizGrid {
+    gap: 10px;
+    margin: 10px 0;
+  }
+  .platform-card {
+    padding: 10px;
+    font-size: 0.75rem;
+    border-width: 3px;
+    gap: 4px;
+  }
+  .platform-card svg { width: 40px; height: 40px; }
+
+  .stepping-stone {
+    width: 100px;
+    height: 100px;
+    border-radius: 16px;
+    padding: 8px;
+    font-size: 0.7rem;
+  }
+  .stepping-stone .step-num { font-size: 1.2rem; }
+  .stepping-stone svg { width: 30px; height: 30px; }
+  .flowPath { gap: 15px; padding: 20px 0; }
+
+  .medal {
+    width: 80px;
+    height: 80px;
+    padding: 8px;
+  }
+  .medal svg { width: 30px; height: 30px; }
+  .medal small { font-size: 0.6rem; }
   .didi-duit {
     width: 60px;
     height: 60px;
@@ -635,4 +667,6 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
     top: -25px;
     right: -30px;
   }
+  .wooden-sign { padding: 12px; font-size: 0.85rem; }
+  .toast { font-size: 0.9rem; padding: 10px; }
 }

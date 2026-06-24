@@ -807,6 +807,7 @@ function TeacherGuide({ setPage, lang, t }) {
                   <li>Tiada tekanan masa.</li>
                   <li>Peneguhan positif (Lencana).</li>
                   <li>Kesan bunyi interaktif (SFX).</li>
+                  <li>Sokongan dwibahasa (BM & EN).</li>
                 </>
               ) : (
                 <>
@@ -816,6 +817,7 @@ function TeacherGuide({ setPage, lang, t }) {
                   <li>No time pressure.</li>
                   <li>Positive reinforcement (Badges).</li>
                   <li>Interactive sound effects (SFX).</li>
+                  <li>Bilingual support (BM & EN).</li>
                 </>
               )}
             </ul>
