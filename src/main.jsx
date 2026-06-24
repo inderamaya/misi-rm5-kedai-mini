@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { createRoot } from 'react-dom/client';
-import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Coins, Map, ShoppingBasket, Brain, Home, BookOpen, Star, ArrowRight } from 'lucide-react';
+import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Coins, Map, ShoppingBasket, Brain, Home, BookOpen, Star, ArrowRight, ArrowLeft } from 'lucide-react';
 import './styles.css';
 import { BUDGET, moneyChoices, items, flowSteps, quiz } from './constants';
 
@@ -67,6 +67,7 @@ const translations = {
     tahniahLencanaShort: "Tahniah! Anda telah memenangi",
     resetConfirm: "Adakah anda pasti mahu set semula semua kemajuan?",
     resetBtn: "Reset",
+    kembali: "Kembali",
     badges: {
       "Lencana Wang": "Lencana Wang",
       "Lencana Peta Alir": "Lencana Peta Alir",
@@ -137,6 +138,7 @@ const translations = {
     tahniahLencanaShort: "Congratulations! You have won",
     resetConfirm: "Are you sure you want to reset all progress?",
     resetBtn: "Reset",
+    kembali: "Back",
     badges: {
       "Lencana Wang": "Money Badge",
       "Lencana Peta Alir": "Flow Map Badge",
@@ -395,6 +397,7 @@ function IntroScreen({ setPage, soundOn, lang, t }) {
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('home'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" onClick={() => { playSFX('click', soundOn); setPage('money'); }}>{t.seterusnya}: {t.kenaliRM5} <ArrowRight /></button>
         </div>
       </section>
@@ -442,6 +445,7 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('intro'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" disabled={!correct} onClick={() => { playSFX('click', soundOn); setPage('flow'); }}>{t.seterusnya}: {t.petaAlir} <ArrowRight /></button>
         </div>
       </section>
@@ -505,6 +509,7 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('money'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" disabled={!complete} onClick={() => { playSFX('click', soundOn); setPage('shop'); }}>{t.seterusnya}: {t.misiKedai} <ArrowRight /></button>
         </div>
       </section>
@@ -584,6 +589,7 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('flow'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" disabled={!excellent} onClick={() => { playSFX('click', soundOn); setPage('wise'); }}>{t.seterusnya}: {t.pilihanBijak} <ArrowRight /></button>
         </div>
       </section>
@@ -650,6 +656,7 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
         </div>
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap', marginTop: '30px'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('shop'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" onClick={() => { playSFX('click', soundOn); setPage('quiz'); }}>{t.seterusnya}: {t.kuiz} <ArrowRight /></button>
         </div>
       </section>
@@ -727,6 +734,7 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
         )}
 
         <div style={{display: 'flex', gap: '15px', flexWrap: 'wrap'}}>
+          <button className="secondaryBtn" onClick={() => { playSFX('click', soundOn); setPage('wise'); }}><ArrowLeft /> {t.kembali}</button>
           <button className="primaryBtn" disabled={!complete} onClick={() => { playSFX('click', soundOn); setPage('finish'); }}>{t.tamatMisi} <ArrowRight /></button>
         </div>
       </section>
