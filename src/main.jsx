@@ -69,6 +69,9 @@ const translations = {
     resetConfirm: "Adakah anda pasti mahu set semula semua kemajuan?",
     resetBtn: "Reset",
     kembali: "Kembali",
+    modPanduan: "Mod Panduan",
+    modHidup: "Mod: Hidup",
+    modMati: "Mod: Mati",
     badges: {
       "Lencana Wang": "Lencana Wang",
       "Lencana Peta Alir": "Lencana Peta Alir",
@@ -141,6 +144,9 @@ const translations = {
     resetConfirm: "Are you sure you want to reset all progress?",
     resetBtn: "Reset",
     kembali: "Back",
+    modPanduan: "Guided Mode",
+    modHidup: "Mod: ON",
+    modMati: "Mod: OFF",
     badges: {
       "Lencana Wang": "Money Badge",
       "Lencana Peta Alir": "Flow Map Badge",
@@ -276,15 +282,64 @@ const Icons = {
   pay: () => <ArrowRight size={32} />,
 };
 
-function Doosee({ className = "", style = {} }) {
+function Doosee({ className = "", style = {}, expression = "thinking" }) {
   return (
-    <div className={`didi-duit bounce ${className}`} style={style}>
+    <div className={`didi-duit bounce ${expression} ${className}`} style={style}>
       <div className="doosee-bubble">Doosee!</div>
+      <div className="sparkle-overlay">
+        <div className="sparkle" style={{top: '10%', left: '10%', width: '15px', height: '15px'}}></div>
+        <div className="sparkle" style={{top: '20%', right: '15%', width: '10px', height: '10px', animationDelay: '0.2s'}}></div>
+        <div className="sparkle" style={{bottom: '20%', left: '20%', width: '12px', height: '12px', animationDelay: '0.4s'}}></div>
+      </div>
       <div className="didi-eyes">
         <div className="didi-eye"></div>
         <div className="didi-eye"></div>
       </div>
       <div className="didi-smile"></div>
+    </div>
+  );
+}
+
+function GuideText({ iconType, text }) {
+  const IconMap = {
+    click: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+        <path d="m21 12-2.3 2.3" />
+        <path d="M12 3v2.3" />
+        <path d="m5.6 5.6 1.7 1.7" />
+        <path d="M3 12h2.3" />
+        <path d="m5.6 18.4 1.7-1.7" />
+        <path d="M12 21v-2.3" />
+        <path d="m18.4 18.4-1.7-1.7" />
+        <path d="m18.4 5.6-1.7 1.7" />
+      </svg>
+    ),
+    look: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
+        <circle cx="12" cy="12" r="3" />
+      </svg>
+    ),
+    drag: (
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+        <path d="m5 9-3 3 3 3" />
+        <path d="m19 9 3 3-3 3" />
+        <path d="m9 5 3-3 3 3" />
+        <path d="m9 19 3 3 3-3" />
+      </svg>
+    ),
+    star: (
+       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round">
+         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+       </svg>
+    )
+  };
+
+  return (
+    <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', verticalAlign: 'middle' }}>
+      <span style={{ color: 'var(--red)', display: 'flex' }}>{IconMap[iconType] || IconMap.click}</span>
+      <span>{text}</span>
     </div>
   );
 }
@@ -298,7 +353,7 @@ function StarRating({ label, value }) {
   );
 }
 
-function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
+function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, guideMode, setGuideMode, t }) {
   return (
     <header className="topbar">
       <button className="homeBtn" onClick={() => { playSFX('click', soundOn); setPage('home'); }}><Home size={18} /> {t.home}</button>
@@ -310,6 +365,9 @@ function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
         </div>
       </div>
       <div className="tools">
+        <button className={`miniBtn ${guideMode ? 'speaking' : ''}`} onClick={() => setGuideMode(!guideMode)}>
+          <RefreshCcw size={17} /> {guideMode ? t.modHidup : t.modMati}
+        </button>
         <button className="miniBtn" onClick={() => setSoundOn(!soundOn)}>{soundOn ? <Volume2 size={17}/> : <VolumeX size={17}/>} {t.suara}</button>
         <button className="miniBtn" onClick={() => setLang(lang === 'bm' ? 'en' : 'bm')}>
           {lang === 'bm' ? 'English' : 'B. Melayu'}
@@ -319,7 +377,7 @@ function Header({ page, setPage, soundOn, setSoundOn, lang, setLang, t }) {
   );
 }
 
-function HomeScreen({ setPage, soundOn, lang, progress, t }) {
+function HomeScreen({ setPage, soundOn, lang, progress, t, expression }) {
   return (
     <main>
       <section className="heroCard castlePanel">
@@ -331,7 +389,7 @@ function HomeScreen({ setPage, soundOn, lang, progress, t }) {
             <button className="primaryBtn brick-style" onClick={() => { playSFX('click', soundOn); setPage('intro'); }}><Sparkles size={20}/> {t.mulakanMisi}</button>
           </div>
         </div>
-        <Doosee />
+        <Doosee expression={expression} />
       </section>
 
       <section className="objectiveGrid">
@@ -381,13 +439,16 @@ function HomeScreen({ setPage, soundOn, lang, progress, t }) {
   );
 }
 
-function IntroScreen({ setPage, soundOn, lang, t }) {
+function IntroScreen({ setPage, soundOn, lang, t, expression }) {
   return (
     <main>
-      <section className="missionCard brick-panel">
+      <section className="missionCard brick-panel" style={{position: 'relative'}}>
+        <Doosee expression={expression} className="mini" style={{position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px'}} />
         <div className="badge-label" style={{background: 'var(--white)', color: 'var(--outline)'}}>{t.pengenalan}</div>
         <h1 style={{color: 'var(--coin)'}}>{t.haiPembeliBijak}</h1>
-        <p style={{fontSize: '1.3rem', fontWeight: '900'}}>{t.kamuAdaRM5}</p>
+        <p style={{fontSize: '1.3rem', fontWeight: '900'}}>
+          <GuideText iconType="look" text={t.kamuAdaRM5} />
+        </p>
 
         <div className="wooden-sign" style={{margin: '30px 0'}}>
           <h2 style={{marginTop: 0}}>{t.contohMudah}</h2>
@@ -407,9 +468,14 @@ function IntroScreen({ setPage, soundOn, lang, t }) {
   );
 }
 
-function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
+function MoneyScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDooseeState, expression }) {
   const [chosen, setChosen] = useState(null);
   const correct = chosen === 'rm5';
+
+  useEffect(() => {
+    setDooseeState('thinking');
+  }, [setDooseeState]);
+
   function award() {
     setProgress(prev => {
       const badges = prev.badges.includes('Lencana Wang') ? prev.badges : [...prev.badges, 'Lencana Wang'];
@@ -420,17 +486,25 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
 
   return (
     <main>
-      <section className="missionCard">
+      <section className="missionCard" style={{position: 'relative'}}>
+        <Doosee expression={expression} className="mini" style={{position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px'}} />
         <div className="badge-label">{t.tahap1}</div>
         <h1>{t.kenaliRM5}</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>{t.klikRM5}</p>
+        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>
+          <GuideText iconType="click" text={t.klikRM5} />
+        </p>
 
         <div className="moneyGrid">
           {moneyChoices.map(m => (
-            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''}`} onClick={() => {
+            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''} ${guideMode && m.id !== 'rm5' ? 'guided-inactive' : ''} ${guideMode && m.id === 'rm5' && !chosen ? 'guide-highlight' : ''}`} onClick={() => {
               setChosen(m.id);
-              if (m.id === 'rm5') playSFX('correct', soundOn);
-              else playSFX('wrong', soundOn);
+              if (m.id === 'rm5') {
+                playSFX('correct', soundOn);
+                setDooseeState('happy');
+              } else {
+                playSFX('wrong', soundOn);
+                setDooseeState('encouraging');
+              }
             }}>
               <div className="coin-block" style={{background: m.id === 'rm5' ? 'var(--coin)' : '#ccc'}}>
                 {Icons[m.type]()}
@@ -443,7 +517,7 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
         {chosen && (
           <div className={`toast ${correct ? 'success' : 'error'}`} aria-live="polite">
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
-              {correct && <Doosee className="mini" style={{ width: '60px', height: '60px', borderWidth: '4px' }} />}
+              {correct && <Doosee className="mini" expression={expression} style={{ width: '60px', height: '60px', borderWidth: '4px' }} />}
               <span>{correct ? t.hebatRM5 : t.cubaLagiRM5}</span>
             </div>
           </div>
@@ -458,9 +532,13 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
   );
 }
 
-function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
+function FlowScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDooseeState, expression }) {
   const [done, setDone] = useState([]);
   const complete = done.length === flowSteps.length;
+
+  useEffect(() => {
+    setDooseeState('thinking');
+  }, [setDooseeState]);
 
   useEffect(() => {
     if (complete) {
@@ -473,24 +551,30 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
 
   return (
     <main>
-      <section className="missionCard">
+      <section className="missionCard" style={{position: 'relative'}}>
+        <Doosee expression={expression} className="mini" style={{position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px'}} />
         <div className="badge-label">{t.tahap2}</div>
         <h1>{t.petaAlirTitle}</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>{t.tekanLangkah}</p>
+        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>
+          <GuideText iconType="click" text={t.tekanLangkah} />
+        </p>
 
         <div className="flowPath">
           {flowSteps.map((s, idx) => {
             const isActive = done.includes(idx);
+            const isNext = idx === done.length;
             return (
               <div key={idx} style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                 <button
-                  className={`stepping-stone ${isActive ? 'active' : ''}`}
+                  className={`stepping-stone ${isActive ? 'active' : ''} ${guideMode && !isActive && !isNext ? 'guided-inactive' : ''} ${guideMode && isNext ? 'guide-highlight' : ''}`}
                   onClick={() => {
                     if (idx === done.length) {
                       setDone(prev => [...prev, idx]);
                       playSFX('correct', soundOn);
+                      setDooseeState(idx === flowSteps.length - 1 ? 'celebrating' : 'happy');
                     } else {
                       playSFX('wrong', soundOn);
+                      setDooseeState('encouraging');
                     }
                   }}
                 >
@@ -507,7 +591,7 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
         {complete && (
           <div className="toast success" aria-live="polite">
             <div style={{display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '20px'}}>
-            <Doosee />
+            <Doosee expression={expression} />
               <span>{t.levelClear}</span>
             </div>
           </div>
@@ -521,8 +605,13 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
     </main>
   );
 }
-function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
+function ShopScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDooseeState, expression }) {
   const [basket, setBasket] = useState([]);
+
+  useEffect(() => {
+    setDooseeState('thinking');
+  }, [setDooseeState]);
+
   const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
   const balance = BUDGET - total;
   const valid = total > 0 && total <= BUDGET;
@@ -544,23 +633,37 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
 
   return (
     <main>
-      <section className="missionCard">
+      <section className="missionCard" style={{position: 'relative'}}>
+        <Doosee expression={expression} className="mini" style={{position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px'}} />
         <div className="badge-label">{t.tahap3}</div>
         <h1>{t.kedaiMini}</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>{t.pilihKeperluan}</p>
+        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>
+          <GuideText iconType="drag" text={t.pilihKeperluan} />
+        </p>
 
         <div className="shopLayout">
           <div className="itemGrid">
-            {items.map(item => (
-              <button key={item.id} className={`platform-card ${basket.includes(item.id) ? 'selected' : ''}`} onClick={() => toggleItem(item.id)}>
-                <div style={{background: 'var(--cream)', borderRadius: '50%', padding: '10px', border: '3px solid var(--outline)'}}>
-                  {Icons[item.type]()}
-                </div>
-                <strong>{item.name[lang]}</strong>
-                <span className="price-tag">RM{item.price}</span>
-                <small style={{fontWeight: '900', color: item.tag.bm === 'KEPERLUAN' ? 'var(--grass)' : 'var(--red)'}}>{item.tag[lang]}</small>
-              </button>
-            ))}
+            {items.map(item => {
+              const isNeed = item.tag.bm === 'KEPERLUAN';
+              const inBasket = basket.includes(item.id);
+              const firstMissingNeed = items.find(i => i.tag.bm === 'KEPERLUAN' && !basket.includes(i.id));
+              const isHighlighted = guideMode && firstMissingNeed && firstMissingNeed.id === item.id;
+              const isInactive = guideMode && (!isNeed || (firstMissingNeed && firstMissingNeed.id !== item.id)) && !inBasket;
+
+              return (
+                <button key={item.id} className={`platform-card ${inBasket ? 'selected' : ''} ${isInactive ? 'guided-inactive' : ''} ${isHighlighted ? 'guide-highlight' : ''}`} onClick={() => {
+                  toggleItem(item.id);
+                  setDooseeState(inBasket ? 'thinking' : 'happy');
+                }}>
+                  <div style={{background: 'var(--cream)', borderRadius: '50%', padding: '10px', border: '3px solid var(--outline)'}}>
+                    {Icons[item.type]()}
+                  </div>
+                  <strong>{item.name[lang]}</strong>
+                  <span className="price-tag">RM{item.price}</span>
+                  <small style={{fontWeight: '900', color: item.tag.bm === 'KEPERLUAN' ? 'var(--grass)' : 'var(--red)'}}>{item.tag[lang]}</small>
+                </button>
+              );
+            })}
           </div>
 
           <aside className="wooden-sign">
@@ -602,10 +705,14 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
   );
 }
 
-function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
+function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t, expression, setDooseeState }) {
   const [activeIdx, setActiveIdx] = useState(0);
   const [reason, setReason] = useState("");
   const active = items[activeIdx];
+
+  useEffect(() => {
+    setDooseeState('thinking');
+  }, [setDooseeState]);
 
   useEffect(() => {
     setProgress(prev => {
@@ -619,12 +726,18 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
       <section className="missionCard">
         <div className="badge-label">{t.tahap4}</div>
         <h1>{t.cartaBijak}</h1>
-        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>{t.bandingBarang}</p>
+        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>
+          <GuideText iconType="look" text={t.bandingBarang} />
+        </p>
 
         <div className="wiseLayout">
           <div style={{display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '15px'}}>
             {items.map((item, idx) => (
-              <button key={item.id} className={`platform-card ${activeIdx === idx ? 'selected' : ''}`} onClick={() => { playSFX('click', soundOn); setActiveIdx(idx); }}>
+              <button key={item.id} className={`platform-card ${activeIdx === idx ? 'selected' : ''}`} onClick={() => {
+                playSFX('click', soundOn);
+                setActiveIdx(idx);
+                setDooseeState('happy');
+              }}>
                 {Icons[item.type]()}
                 <small>{item.name[lang]}</small>
               </button>
@@ -644,7 +757,7 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
 
             <div className="wooden-sign" style={{ marginTop: '20px', fontSize: '0.9rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-                <Doosee className="mini" style={{ width: '50px', height: '50px', borderWidth: '4px' }} />
+                <Doosee className="mini" expression={expression} style={{ width: '50px', height: '50px', borderWidth: '4px' }} />
                 <div>
                   <strong>{t.pendapatDoosee}</strong>
                   <p style={{ margin: '5px 0 0', fontSize: '1rem', lineHeight: '1.4' }}>
@@ -665,8 +778,13 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
   );
 }
 
-function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
+function QuizScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDooseeState, expression }) {
   const [answers, setAnswers] = useState({});
+
+  useEffect(() => {
+    setDooseeState('thinking');
+  }, [setDooseeState]);
+
   const shuffledOptions = useMemo(() => {
     return quiz.map(q => {
       const opts = q.options[lang].map((text, index) => ({ text, index }));
@@ -693,12 +811,18 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
 
   return (
     <main>
-      <section className="missionCard">
+      <section className="missionCard" style={{position: 'relative'}}>
+        <Doosee expression={expression} className="mini" style={{position: 'absolute', top: '20px', right: '20px', width: '60px', height: '60px'}} />
         <div className="badge-label">{t.tahap5}</div>
         <h1>{t.kuiz}</h1>
+        <p style={{fontSize: '1.2rem', fontWeight: '900'}}>
+          <GuideText iconType="star" text={t.kuiz} />
+        </p>
 
         <div className="quizGrid">
-          {quiz.map((q, idx) => (
+          {quiz.map((q, idx) => {
+            if (guideMode && idx !== answered) return null;
+            return (
             <div key={idx} className="quizCard brick-panel" style={{color: 'var(--outline)', background: 'var(--white)'}}>
               <h2 style={{fontSize: '1.2rem'}}>{idx + 1}. {q.q[lang]}</h2>
               <div style={{display: 'grid', gap: '10px', marginTop: '15px'}}>
@@ -709,8 +833,13 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
                     onClick={() => {
                       playSFX('click', soundOn);
                       setAnswers(prev => ({...prev, [idx]: opt.index}));
-                      if (opt.index === q.answer) playSFX('correct', soundOn);
-                      else playSFX('wrong', soundOn);
+                      if (opt.index === q.answer) {
+                        playSFX('correct', soundOn);
+                        setDooseeState('happy');
+                      } else {
+                        playSFX('wrong', soundOn);
+                        setDooseeState('encouraging');
+                      }
                     }}
                     style={{flexDirection: 'row', justifyContent: 'flex-start', padding: '12px 20px'}}
                   >
@@ -724,8 +853,9 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
                   {answers[idx] === q.answer ? (lang === 'bm' ? 'Betul! ' : 'Correct! ') : (lang === 'bm' ? 'Salah. ' : 'Wrong. ')} {q.explain[lang]}
                 </div>
               )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
         </div>
 
         {complete && (
@@ -743,7 +873,7 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
   );
 }
 
-function FinishScreen({ setPage, progress, soundOn, lang, t }) {
+function FinishScreen({ setPage, progress, soundOn, lang, t, expression }) {
   return (
     <main>
       <div className="castle-container">
@@ -752,6 +882,7 @@ function FinishScreen({ setPage, progress, soundOn, lang, t }) {
         </div>
         <div style={{background: '#888', width: '200px', height: '150px', margin: '0 auto', border: '6px solid var(--outline)', borderRadius: '10px 10px 0 0', position: 'relative'}}>
            <div style={{position: 'absolute', bottom: 0, left: '50%', transform: 'translateX(-50%)', width: '60px', height: '80px', background: 'var(--outline)', borderRadius: '30px 30px 0 0'}}></div>
+           <Doosee expression={expression} style={{ position: 'absolute', top: '-40px', left: '50%', marginLeft: '-50px' }} />
         </div>
 
         <div className="badge-label" style={{marginTop: '30px'}}>{t.istana}</div>
@@ -894,6 +1025,8 @@ function App() {
   const [progress, setProgress] = useState(loadProgress);
   const [soundOn, setSoundOn] = useState(true);
   const [lang, setLang] = useState('bm');
+  const [dooseeState, setDooseeState] = useState('thinking');
+  const [guideMode, setGuideMode] = useState(false);
 
   const t = translations[lang];
 
@@ -904,6 +1037,9 @@ function App() {
     if (lastPage.current !== page) {
       playSFX('pageChange', soundOn);
       lastPage.current = page;
+      if (page === 'finish') setDooseeState('celebrating');
+      else if (page === 'home') setDooseeState('thinking');
+      else setDooseeState('thinking');
     }
   }, [page, soundOn]);
 
@@ -922,16 +1058,26 @@ function App() {
   return (
     <div className={className}>
       <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
-      <Header page={page} setPage={setPage} soundOn={soundOn} setSoundOn={setSoundOn} lang={lang} setLang={setLang} t={t} />
+      <Header
+        page={page}
+        setPage={setPage}
+        soundOn={soundOn}
+        setSoundOn={setSoundOn}
+        lang={lang}
+        setLang={setLang}
+        guideMode={guideMode}
+        setGuideMode={setGuideMode}
+        t={t}
+      />
       <div className="screen">
-        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} lang={lang} progress={progress} t={t} />}
-        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} lang={lang} t={t} />}
-        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
-        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
-        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
-        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
-        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} />}
-        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} t={t} />}
+        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} lang={lang} progress={progress} t={t} expression={dooseeState} />}
+        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
+        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} expression={dooseeState} setDooseeState={setDooseeState} />}
+        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
         {page === 'teacher' && <TeacherGuide setPage={setPage} lang={lang} t={t} />}
       </div>
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> {t.resetBtn}</button>
