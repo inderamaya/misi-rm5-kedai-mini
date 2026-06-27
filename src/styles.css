@@ -495,6 +495,7 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   justify-content: center;
   box-shadow: inset -6px -6px 0 rgba(0,0,0,0.1);
   flex-shrink: 0;
+  transition: all 0.3s ease;
 }
 .didi-eyes {
   display: flex;
@@ -505,6 +506,7 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   height: 10px;
   background: var(--outline);
   border-radius: 50%;
+  transition: all 0.3s ease;
 }
 .didi-smile {
   position: absolute;
@@ -513,6 +515,89 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   height: 15px;
   border-bottom: 4px solid var(--outline);
   border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+/* Expressions */
+.didi-duit.happy .didi-eye {
+  height: 4px;
+  border-radius: 2px;
+  margin-top: 3px;
+}
+.didi-duit.happy .didi-smile {
+  width: 40px;
+  height: 20px;
+  border-bottom-width: 6px;
+}
+
+.didi-duit.thinking .didi-eye:nth-child(1) {
+  transform: scale(0.7);
+}
+.didi-duit.thinking .didi-smile {
+  transform: rotate(-10deg);
+  width: 25px;
+  bottom: 28%;
+}
+
+.didi-duit.encouraging .didi-eye {
+  transform: scale(1.4);
+}
+.didi-duit.encouraging .didi-smile {
+  width: 35px;
+  height: 18px;
+  border-radius: 0 0 20px 20px;
+  background: var(--outline);
+  border: none;
+  bottom: 20%;
+}
+
+.didi-duit.celebrating {
+  animation: bounce-fast 0.5s ease-in-out infinite alternate !important;
+}
+
+@keyframes bounce-fast {
+  from { transform: translateY(0); }
+  to { transform: translateY(-30px); }
+}
+
+.sparkle-overlay {
+  position: absolute;
+  inset: -20px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.didi-duit.celebrating .sparkle-overlay {
+  opacity: 1;
+}
+.sparkle {
+  position: absolute;
+  background: white;
+  clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+  animation: sparkle-twinkle 1s infinite;
+}
+@keyframes sparkle-twinkle {
+  0%, 100% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.5); opacity: 0.5; }
+}
+
+/* Guided Mode */
+.guided-inactive {
+  opacity: 0.3 !important;
+  pointer-events: none !important;
+  filter: grayscale(0.6);
+}
+
+.guide-highlight {
+  animation: pulse-ring 1.5s infinite !important;
+  border-color: var(--red) !important;
+  box-shadow: 0 0 0 0 rgba(233, 68, 58, 0.7) !important;
+}
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(233, 68, 58, 0.7); }
+  70% { box-shadow: 0 0 0 20px rgba(233, 68, 58, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(233, 68, 58, 0); }
 }
 
 .doosee-bubble {
