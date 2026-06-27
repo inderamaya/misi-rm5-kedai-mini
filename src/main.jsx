@@ -4,6 +4,8 @@ import { Volume2, VolumeX, RefreshCcw, Trophy, Sparkles, Coins, Map, ShoppingBas
 import './styles.css';
 import { BUDGET, moneyChoices, items, flowSteps, quiz } from './constants';
 
+const PAGE_ORDER = ['home', 'intro', 'money', 'flow', 'shop', 'wise', 'quiz', 'finish'];
+
 const translations = {
   bm: {
     home: "Utama",
@@ -72,6 +74,7 @@ const translations = {
     modPanduan: "Mod Panduan",
     modHidup: "Mod: Hidup",
     modMati: "Mod: Mati",
+    tahap: "Tahap",
     badges: {
       "Lencana Wang": "Lencana Wang",
       "Lencana Peta Alir": "Lencana Peta Alir",
@@ -147,6 +150,7 @@ const translations = {
     modPanduan: "Guided Mode",
     modHidup: "Mod: ON",
     modMati: "Mod: OFF",
+    tahap: "Level",
     badges: {
       "Lencana Wang": "Money Badge",
       "Lencana Peta Alir": "Flow Map Badge",
@@ -1020,8 +1024,44 @@ function TeacherGuide({ setPage, lang, t }) {
   );
 }
 
+function ProgressBar({ currentPage, PAGE_ORDER, onJump, t }) {
+  const currentIndex = PAGE_ORDER.indexOf(currentPage);
+  if (currentIndex === -1) return null;
+
+  return (
+    <div className="progress-bar-container">
+      <div className="progress-text">{t.tahap || (t.home === 'Utama' ? 'Tahap' : 'Level')} {currentIndex + 1} / {PAGE_ORDER.length}</div>
+      <div className="steps-row">
+        {PAGE_ORDER.map((p, idx) => {
+          const isCompleted = idx < currentIndex;
+          const isCurrent = idx === currentIndex;
+          return (
+            <button
+              key={p}
+              className={`step-circle ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
+              onClick={() => isCompleted && onJump(p)}
+              disabled={!isCompleted}
+              title={p}
+            />
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
+function SwipeArrows({ onPrev, onNext, canPrev, canNext }) {
+  return (
+    <>
+      {canPrev && <div className="swipe-indicator left" onClick={onPrev}><ArrowLeft size={30} /></div>}
+      {canNext && <div className="swipe-indicator right" onClick={onNext}><ArrowRight size={30} /></div>}
+    </>
+  );
+}
+
 function App() {
   const [page, setPage] = useState('home');
+  const [direction, setDirection] = useState('fade');
   const [progress, setProgress] = useState(loadProgress);
   const [soundOn, setSoundOn] = useState(true);
   const [lang, setLang] = useState('bm');
@@ -1031,6 +1071,43 @@ function App() {
   const t = translations[lang];
 
   useEffect(() => saveProgress(progress), [progress]);
+
+  const goToPage = (nextPage) => {
+    if (nextPage === page) return;
+
+    const currentIndex = PAGE_ORDER.indexOf(page);
+    const nextIndex = PAGE_ORDER.indexOf(nextPage);
+
+    if (currentIndex !== -1 && nextIndex !== -1) {
+      setDirection(nextIndex > currentIndex ? 'forward' : 'backward');
+    } else {
+      setDirection('fade');
+    }
+
+    setPage(nextPage);
+  };
+
+  const handleSwipe = (dir) => {
+    const currentIndex = PAGE_ORDER.indexOf(page);
+    if (currentIndex === -1) return;
+
+    if (dir === 'left' && currentIndex < PAGE_ORDER.length - 1) {
+      // Swiping left moves forward
+      // Check if current page is complete before allowing forward swipe
+      const isComplete = (page === 'home') ||
+                        (page === 'intro') ||
+                        (page === 'money' && progress.badges.includes('Lencana Wang')) ||
+                        (page === 'flow' && progress.badges.includes('Lencana Peta Alir')) ||
+                        (page === 'shop' && progress.badges.includes('Pembeli Bijak')) ||
+                        (page === 'wise' && progress.badges.includes('Lencana Carta Bijak')) ||
+                        (page === 'quiz' && progress.badges.includes('Juara Dunia Syiling RM5'));
+
+      if (isComplete) goToPage(PAGE_ORDER[currentIndex + 1]);
+    } else if (dir === 'right' && currentIndex > 0) {
+      // Swiping right moves backward
+      goToPage(PAGE_ORDER[currentIndex - 1]);
+    }
+  };
 
   const lastPage = React.useRef(page);
   useEffect(() => {
@@ -1042,6 +1119,18 @@ function App() {
       else setDooseeState('thinking');
     }
   }, [page, soundOn]);
+
+  const touchStart = React.useRef(null);
+  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX; };
+  const onTouchEnd = (e) => {
+    if (!touchStart.current) return;
+    const touchEnd = e.changedTouches[0].clientX;
+    const diff = touchStart.current - touchEnd;
+    if (Math.abs(diff) > 50) {
+      handleSwipe(diff > 0 ? 'left' : 'right');
+    }
+    touchStart.current = null;
+  };
 
   const className = useMemo(() => [
     'appShell',
@@ -1055,12 +1144,24 @@ function App() {
     setPage('home');
   }
 
+  const currentIndex = PAGE_ORDER.indexOf(page);
+  const canPrev = currentIndex > 0;
+  const canNext = currentIndex !== -1 && currentIndex < PAGE_ORDER.length - 1 && (
+    (page === 'home') ||
+    (page === 'intro') ||
+    (page === 'money' && progress.badges.includes('Lencana Wang')) ||
+    (page === 'flow' && progress.badges.includes('Lencana Peta Alir')) ||
+    (page === 'shop' && progress.badges.includes('Pembeli Bijak')) ||
+    (page === 'wise' && progress.badges.includes('Lencana Carta Bijak')) ||
+    (page === 'quiz' && progress.badges.includes('Juara Dunia Syiling RM5'))
+  );
+
   return (
-    <div className={className}>
+    <div className={className} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
       <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
       <Header
         page={page}
-        setPage={setPage}
+        setPage={goToPage}
         soundOn={soundOn}
         setSoundOn={setSoundOn}
         lang={lang}
@@ -1069,16 +1170,26 @@ function App() {
         setGuideMode={setGuideMode}
         t={t}
       />
-      <div className="screen">
-        {page === 'home' && <HomeScreen setPage={setPage} soundOn={soundOn} lang={lang} progress={progress} t={t} expression={dooseeState} />}
-        {page === 'intro' && <IntroScreen setPage={setPage} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
-        {page === 'money' && <MoneyScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
-        {page === 'flow' && <FlowScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
-        {page === 'shop' && <ShopScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
-        {page === 'wise' && <WiseChoiceScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} expression={dooseeState} setDooseeState={setDooseeState} />}
-        {page === 'quiz' && <QuizScreen setPage={setPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
-        {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
-        {page === 'teacher' && <TeacherGuide setPage={setPage} lang={lang} t={t} />}
+
+      <ProgressBar currentPage={page} PAGE_ORDER={PAGE_ORDER} onJump={goToPage} t={t} />
+
+      <SwipeArrows
+        onPrev={() => handleSwipe('right')}
+        onNext={() => handleSwipe('left')}
+        canPrev={canPrev}
+        canNext={canNext}
+      />
+
+      <div className={`screen transition-${direction}`} key={page}>
+        {page === 'home' && <HomeScreen setPage={goToPage} soundOn={soundOn} lang={lang} progress={progress} t={t} expression={dooseeState} />}
+        {page === 'intro' && <IntroScreen setPage={goToPage} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
+        {page === 'money' && <MoneyScreen setPage={goToPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'flow' && <FlowScreen setPage={goToPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'shop' && <ShopScreen setPage={goToPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'wise' && <WiseChoiceScreen setPage={goToPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} expression={dooseeState} setDooseeState={setDooseeState} />}
+        {page === 'quiz' && <QuizScreen setPage={goToPage} soundOn={soundOn} lang={lang} setProgress={setProgress} t={t} guideMode={guideMode} setDooseeState={setDooseeState} expression={dooseeState} />}
+        {page === 'finish' && <FinishScreen setPage={goToPage} progress={progress} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
+        {page === 'teacher' && <TeacherGuide setPage={goToPage} lang={lang} t={t} />}
       </div>
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> {t.resetBtn}</button>
     </div>
