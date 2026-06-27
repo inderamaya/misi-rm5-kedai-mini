@@ -118,11 +118,12 @@ body {
   font-weight: 800;
   font-family: inherit;
   display: inline-flex;
-  gap: 8px;
+  gap: 16px;
   align-items: center;
   cursor: pointer;
   box-shadow: 0 4px 0 var(--outline);
   transition: transform 0.1s;
+  min-height: 56px;
 }
 .homeBtn:active, .miniBtn:active, .iconBtn:active, .resetBtn:active {
   transform: translateY(4px);
@@ -199,9 +200,10 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   box-shadow: 0 8px 0 var(--outline);
   transition: all .1s;
+  min-height: 56px;
 }
 .primaryBtn { background: var(--coin); }
 .secondaryBtn { background: var(--white); }
@@ -260,7 +262,7 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
 /* Grids */
 .moneyGrid, .itemGrid, .flowPath, .quizGrid {
   display: grid;
-  gap: var(--space-lg);
+  gap: 20px;
   margin: var(--space-lg) 0;
 }
 .moneyGrid { grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); }
@@ -270,14 +272,15 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   background: var(--white);
   border: 4px solid var(--outline);
   border-radius: 12px;
-  padding: 24px;
+  padding: 20px;
   cursor: pointer;
   box-shadow: 6px 6px 0 var(--outline);
   transition: all 0.1s;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
+  min-height: 56px;
 }
 .platform-card:hover { transform: translateY(-4px); box-shadow: 0 12px 0 var(--outline); }
 .platform-card:active { transform: translateY(6px); box-shadow: 0 2px 0 var(--outline); }
@@ -292,8 +295,10 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   padding: 40px 0;
 }
 .stepping-stone {
-  width: clamp(120px, 40vw, 160px);
-  height: clamp(120px, 40vw, 160px);
+  width: clamp(140px, 40vw, 160px);
+  height: clamp(140px, 40vw, 160px);
+  min-width: 140px;
+  min-height: 140px;
   background: #aaa;
   border: 6px solid var(--outline);
   border-radius: 24px;
@@ -330,6 +335,7 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   padding: 4px 15px;
   border-radius: 999px;
   font-weight: 900;
+  font-size: 1.2rem;
 }
 
 /* Star Ratings */
@@ -590,8 +596,8 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
 }
 .medal:active { transform: scale(0.9) !important; }
 @keyframes pop-in {
-  from { transform: scale(0); }
-  to { transform: scale(1); }
+  from { transform: scale(0); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
 }
 
 .speaking {
@@ -811,6 +817,8 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
     border-width: 3px;
     border-radius: 12px;
     box-shadow: 0 4px 0 var(--outline);
+    width: 100%;
+    justify-content: center;
   }
   .teacherGuide h1 { font-size: 1.2rem; }
   .teacherGuide h2 { font-size: 1rem; margin: 8px 0; }
@@ -833,6 +841,7 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
     font-size: 0.75rem;
     border-width: 3px;
     gap: 4px;
+    width: 100%;
   }
   .platform-card svg { width: 40px; height: 40px; }
 
@@ -870,4 +879,138 @@ h2 { font-size: clamp(1.4rem, 5vw, 1.8rem); margin: var(--space-sm) 0; }
   }
   .wooden-sign { padding: 12px; font-size: 0.85rem; }
   .toast { font-size: 0.9rem; padding: 10px; }
+}
+
+/* MBPK Accessibility Features */
+
+/* Drag & Drop Basket */
+.shop-item-card {
+  cursor: grab;
+  user-select: none;
+  min-width: 150px;
+  min-height: 150px;
+  position: relative;
+}
+.shop-item-card:active {
+  cursor: grabbing;
+}
+.shop-item-card svg {
+  width: 60px;
+  height: 60px;
+}
+
+.basket-drop-zone {
+  border: 4px dashed rgba(255, 255, 255, 0.5);
+  border-radius: 12px;
+  padding: 15px;
+  transition: all 0.3s ease;
+  min-height: 100px;
+}
+.basket-drop-zone.drag-over {
+  border: 4px solid var(--coin);
+  background: rgba(255, 212, 71, 0.2);
+  box-shadow: 0 0 20px var(--coin);
+  transform: scale(1.02);
+}
+
+.basket-item {
+  animation: pop-in 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.add-btn {
+  background: var(--grass);
+  color: var(--white);
+  border: 3px solid var(--outline);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 4px 0 var(--outline);
+  transition: all 0.1s;
+  font-weight: 900;
+  font-size: 1.5rem;
+}
+.add-btn:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 var(--outline);
+}
+
+/* Dengar Button */
+.dengar-btn {
+  position: fixed;
+  bottom: 100px;
+  left: 20px;
+  z-index: 1000;
+  background: var(--white);
+  border: 4px solid var(--outline);
+  border-radius: 20px;
+  width: 80px;
+  height: 80px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 6px 0 var(--outline);
+  transition: all 0.2s;
+  font-family: inherit;
+  font-weight: 900;
+}
+.dengar-btn svg {
+  width: 32px;
+  height: 32px;
+}
+.dengar-btn span {
+  font-size: 0.7rem;
+  margin-top: 4px;
+}
+.dengar-btn:active {
+  transform: translateY(4px);
+  box-shadow: 0 2px 0 var(--outline);
+}
+.dengar-btn.speaking {
+  background: var(--coin) !important;
+  animation: dengar-pulse 1s infinite;
+}
+
+@keyframes dengar-pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Vibration Feedback */
+@media (prefers-reduced-motion: no-preference) {
+  .feedback-correct {
+    animation: correct-pulse 0.4s ease-in-out;
+  }
+  .feedback-wrong {
+    animation: wrong-shake 0.5s ease-in-out;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .feedback-correct {
+    border-color: var(--grass) !important;
+    transition: border-color 0.5s;
+  }
+  .feedback-wrong {
+    border-color: var(--red) !important;
+    transition: border-color 0.5s;
+  }
+}
+
+@keyframes correct-pulse {
+  0% { transform: scale(1.0); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1.0); }
+}
+
+@keyframes wrong-shake {
+  0%, 100% { transform: translateX(0); }
+  20%, 60% { transform: translateX(-8px); }
+  40%, 80% { transform: translateX(8px); }
+  90% { transform: translateX(-4px); }
 }
