@@ -4,7 +4,7 @@ test('Verify full user flow and props', async ({ page }) => {
   await page.goto('http://localhost:5173');
 
   // Home Screen
-  await expect(page.locator('h1')).toContainText('Dunia Kedai Mini');
+  await expect(page.locator('h1')).toContainText('Selamat Datang');
   await page.screenshot({ path: 'full_flow_1_home.png' });
 
   // Go to Intro
