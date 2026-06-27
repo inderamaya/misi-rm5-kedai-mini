@@ -69,6 +69,16 @@ const translations = {
     resetConfirm: "Adakah anda pasti mahu set semula semua kemajuan?",
     resetBtn: "Reset",
     kembali: "Kembali",
+    dengar: "Dengar",
+    speech: {
+      intro: ["Pengenalan. Hai Pembeli Bijak! Kamu ada RM5. Mari belajar cara membeli barang dengan bijak. Contoh Mudah: Roti RM2, Air Mineral RM1. Jumlah RM3. Baki RM2."],
+      money: ["Tahap 1. Kenali Wang. Klik wang yang bernilai RM5."],
+      flow: ["Tahap 2. Peta Alir Pembeli Bijak. Tekan setiap langkah mengikut urutan 1 hingga 6."],
+      shop: ["Tahap 3. Kedai Mini Ajaib. Kamu ada RM5. Pilih barang keperluan dahulu."],
+      wise: ["Tahap 4. Carta Bijak. Bandingkan barang menggunakan bintang."],
+      quiz: ["Tahap 5. Kuiz Pengukuhan. Jawab semua soalan."],
+      finish: ["Tamat Misi. Istana Pembeli Bijak. Tahniah! Kamu berjaya!"]
+    },
     badges: {
       "Lencana Wang": "Lencana Wang",
       "Lencana Peta Alir": "Lencana Peta Alir",
@@ -141,6 +151,16 @@ const translations = {
     resetConfirm: "Are you sure you want to reset all progress?",
     resetBtn: "Reset",
     kembali: "Back",
+    dengar: "Listen",
+    speech: {
+      intro: ["Introduction. Hi Wise Buyer! You have RM5. Let's learn how to buy items wisely. Simple Example: Bread RM2, Mineral Water RM1. Total RM3. Balance RM2."],
+      money: ["Level 1. Identify Money. Click the money worth RM5."],
+      flow: ["Level 2. Wise Buyer Flow Map. Press each step in order 1 to 6."],
+      shop: ["Level 3. Magic Mini Shop. You have RM5. Choose needs first."],
+      wise: ["Level 4. Wise Chart. Compare items using stars."],
+      quiz: ["Level 5. Reinforcement Quiz. Answer all questions."],
+      finish: ["Mission Complete. Wise Buyer Palace. Congratulations! You succeeded!"]
+    },
     badges: {
       "Lencana Wang": "Money Badge",
       "Lencana Peta Alir": "Flow Map Badge",
@@ -175,6 +195,69 @@ function playSFX(type, enabled) {
   const audio = new Audio(SOUNDS[type]);
   audio.volume = 0.5;
   audio.play().catch(() => {});
+}
+
+function speakAllText(textArray, lang, onEnd) {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+
+  const synthLang = lang === 'bm' ? 'ms-MY' : 'en-US';
+  let index = 0;
+
+  function speakNext() {
+    if (index >= textArray.length) {
+      if (onEnd) onEnd();
+      return;
+    }
+    const utterance = new SpeechSynthesisUtterance(textArray[index]);
+    utterance.lang = synthLang;
+    utterance.rate = 0.85;
+    utterance.pitch = 1.0;
+    utterance.onend = () => {
+      index++;
+      speakNext();
+    };
+    utterance.onerror = () => {
+      index++;
+      speakNext();
+    };
+    window.speechSynthesis.speak(utterance);
+  }
+
+  speakNext();
+}
+
+function DengarButton({ texts, lang, t }) {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  const supported = !!window.speechSynthesis;
+
+  useEffect(() => {
+    return () => {
+      if (window.speechSynthesis) window.speechSynthesis.cancel();
+    };
+  }, []);
+
+  const handleSpeak = () => {
+    if (isSpeaking) {
+      window.speechSynthesis.cancel();
+      setIsSpeaking(false);
+      return;
+    }
+    if (!texts || texts.length === 0) return;
+    setIsSpeaking(true);
+    speakAllText(texts, lang, () => setIsSpeaking(false));
+  };
+
+  return (
+    <button
+      className={`dengar-btn ${isSpeaking ? 'speaking' : ''}`}
+      onClick={handleSpeak}
+      title={supported ? "" : (lang === 'bm' ? "Audio tidak disokong" : "Audio not supported")}
+    >
+      <Volume2 size={32} />
+      <span>{t.dengar}</span>
+    </button>
+  );
 }
 
 // Custom SVG Icons
@@ -409,6 +492,7 @@ function IntroScreen({ setPage, soundOn, lang, t }) {
 
 function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [chosen, setChosen] = useState(null);
+  const [feedback, setFeedback] = useState(null); // { id, type: 'correct' | 'wrong' }
   const correct = chosen === 'rm5';
   function award() {
     setProgress(prev => {
@@ -427,11 +511,21 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
 
         <div className="moneyGrid">
           {moneyChoices.map(m => (
-            <button key={m.id} className={`platform-card ${chosen === m.id ? 'selected' : ''}`} onClick={() => {
-              setChosen(m.id);
-              if (m.id === 'rm5') playSFX('correct', soundOn);
-              else playSFX('wrong', soundOn);
-            }}>
+            <button
+              key={m.id}
+              className={`platform-card ${chosen === m.id ? 'selected' : ''} ${feedback?.id === m.id ? (feedback.type === 'correct' ? 'feedback-correct' : 'feedback-wrong') : ''}`}
+              onClick={() => {
+                setChosen(m.id);
+                if (m.id === 'rm5') {
+                  playSFX('correct', soundOn);
+                  setFeedback({ id: m.id, type: 'correct' });
+                } else {
+                  playSFX('wrong', soundOn);
+                  setFeedback({ id: m.id, type: 'wrong' });
+                }
+                setTimeout(() => setFeedback(null), 500);
+              }}
+            >
               <div className="coin-block" style={{background: m.id === 'rm5' ? 'var(--coin)' : '#ccc'}}>
                 {Icons[m.type]()}
               </div>
@@ -460,6 +554,7 @@ function MoneyScreen({ setPage, soundOn, lang, setProgress, t }) {
 
 function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [done, setDone] = useState([]);
+  const [feedback, setFeedback] = useState(null); // { index, type }
   const complete = done.length === flowSteps.length;
 
   useEffect(() => {
@@ -484,14 +579,17 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
             return (
               <div key={idx} style={{display: 'flex', alignItems: 'center', gap: '10px'}}>
                 <button
-                  className={`stepping-stone ${isActive ? 'active' : ''}`}
+                  className={`stepping-stone ${isActive ? 'active' : ''} ${feedback?.index === idx ? (feedback.type === 'correct' ? 'feedback-correct' : 'feedback-wrong') : ''}`}
                   onClick={() => {
                     if (idx === done.length) {
                       setDone(prev => [...prev, idx]);
                       playSFX('correct', soundOn);
+                      setFeedback({ index: idx, type: 'correct' });
                     } else {
                       playSFX('wrong', soundOn);
+                      setFeedback({ index: idx, type: 'wrong' });
                     }
+                    setTimeout(() => setFeedback(null), 500);
                   }}
                 >
                   <div className="step-num">{idx + 1}</div>
@@ -523,6 +621,9 @@ function FlowScreen({ setPage, soundOn, lang, setProgress, t }) {
 }
 function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [basket, setBasket] = useState([]);
+  const [dragOver, setDragOver] = useState(false);
+  const [lastTotal, setLastTotal] = useState(0);
+  const [basketFeedback, setBasketFeedback] = useState(null); // 'shake'
   const total = basket.reduce((sum, id) => sum + items.find(i => i.id === id).price, 0);
   const balance = BUDGET - total;
   const valid = total > 0 && total <= BUDGET;
@@ -530,8 +631,36 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
   const excellent = valid && hasNeed;
 
   function toggleItem(id) {
+    const isAdding = !basket.includes(id);
+    if (isAdding && (total + items.find(i => i.id === id).price > BUDGET)) {
+      playSFX('wrong', soundOn);
+      setBasketFeedback('shake');
+      setTimeout(() => setBasketFeedback(null), 500);
+      return;
+    } else {
+      playSFX('click', soundOn);
+    }
     setBasket(prev => prev.includes(id) ? prev.filter(x => x !== id) : [...prev, id]);
   }
+
+  useEffect(() => {
+    if (total !== lastTotal) {
+      setLastTotal(total);
+    }
+  }, [total, lastTotal]);
+
+  const onDragStart = (e, id) => {
+    e.dataTransfer.setData('text/plain', id);
+  };
+
+  const onDrop = (e) => {
+    e.preventDefault();
+    setDragOver(false);
+    const id = e.dataTransfer.getData('text/plain');
+    if (id && !basket.includes(id)) {
+      toggleItem(id);
+    }
+  };
 
   useEffect(() => {
     if (excellent) {
@@ -552,22 +681,36 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
         <div className="shopLayout">
           <div className="itemGrid">
             {items.map(item => (
-              <button key={item.id} className={`platform-card ${basket.includes(item.id) ? 'selected' : ''}`} onClick={() => toggleItem(item.id)}>
+              <button
+                key={item.id}
+                className={`platform-card shop-item-card ${basket.includes(item.id) ? 'selected' : ''}`}
+                draggable="true"
+                onDragStart={(e) => onDragStart(e, item.id)}
+                onClick={() => toggleItem(item.id)}
+              >
                 <div style={{background: 'var(--cream)', borderRadius: '50%', padding: '10px', border: '3px solid var(--outline)'}}>
                   {Icons[item.type]()}
                 </div>
                 <strong>{item.name[lang]}</strong>
                 <span className="price-tag">RM{item.price}</span>
                 <small style={{fontWeight: '900', color: item.tag.bm === 'KEPERLUAN' ? 'var(--grass)' : 'var(--red)'}}>{item.tag[lang]}</small>
+                <div className="add-btn" onClick={(e) => { e.stopPropagation(); toggleItem(item.id); }}>
+                  {basket.includes(item.id) ? 'X' : '+'}
+                </div>
               </button>
             ))}
           </div>
 
-          <aside className="wooden-sign">
+          <aside
+            className={`wooden-sign basket-drop-zone ${dragOver ? 'drag-over' : ''} ${basketFeedback === 'shake' ? 'feedback-wrong' : ''}`}
+            onDragOver={(e) => { e.preventDefault(); setDragOver(true); }}
+            onDragLeave={() => setDragOver(false)}
+            onDrop={onDrop}
+          >
             <h2 style={{marginTop: 0}}>{t.troliSaya} 🛒</h2>
             {basket.length === 0 ? <p>{t.pilihBarang}</p> : basket.map(id => {
               const item = items.find(i => i.id === id);
-              return <div key={id} style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
+              return <div key={id} className="basket-item" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
                 <span>{item.name[lang]} (RM{item.price})</span>
                 <button
                   onClick={() => { playSFX('click', soundOn); toggleItem(id); }}
@@ -578,11 +721,11 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t }) {
             <hr style={{borderColor: 'rgba(255,255,255,0.3)'}} />
             <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: '900'}}>
               <span>{t.jumlah}:</span>
-              <span>RM{total}</span>
+              <span className={total !== lastTotal ? 'pulse-number' : ''}>RM{total}</span>
             </div>
             <div style={{display: 'flex', justifyContent: 'space-between', fontSize: '1.2rem', fontWeight: '900', color: balance < 0 ? 'var(--red)' : 'var(--coin)'}}>
               <span>{t.baki}:</span>
-              <span>RM{balance}</span>
+              <span className={total !== lastTotal ? 'pulse-number' : ''}>RM{balance}</span>
             </div>
 
             <div style={{marginTop: '20px'}} aria-live="polite">
@@ -667,6 +810,7 @@ function WiseChoiceScreen({ setPage, soundOn, lang, setProgress, t }) {
 
 function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
   const [answers, setAnswers] = useState({});
+  const [feedback, setFeedback] = useState(null); // { qIdx, optIdx, type }
   const shuffledOptions = useMemo(() => {
     return quiz.map(q => {
       const opts = q.options[lang].map((text, index) => ({ text, index }));
@@ -705,12 +849,18 @@ function QuizScreen({ setPage, soundOn, lang, setProgress, t }) {
                 {shuffledOptions[idx].map((opt, optIdx) => (
                   <button
                     key={optIdx}
-                    className={`platform-card ${answers[idx] === opt.index ? 'selected' : ''}`}
+                    className={`platform-card ${answers[idx] === opt.index ? 'selected' : ''} ${feedback?.qIdx === idx && feedback?.optIdx === optIdx ? (feedback.type === 'correct' ? 'feedback-correct' : 'feedback-wrong') : ''}`}
                     onClick={() => {
                       playSFX('click', soundOn);
                       setAnswers(prev => ({...prev, [idx]: opt.index}));
-                      if (opt.index === q.answer) playSFX('correct', soundOn);
-                      else playSFX('wrong', soundOn);
+                      if (opt.index === q.answer) {
+                        playSFX('correct', soundOn);
+                        setFeedback({ qIdx: idx, optIdx, type: 'correct' });
+                      } else {
+                        playSFX('wrong', soundOn);
+                        setFeedback({ qIdx: idx, optIdx, type: 'wrong' });
+                      }
+                      setTimeout(() => setFeedback(null), 500);
                     }}
                     style={{flexDirection: 'row', justifyContent: 'flex-start', padding: '12px 20px'}}
                   >
@@ -934,6 +1084,7 @@ function App() {
         {page === 'finish' && <FinishScreen setPage={setPage} progress={progress} soundOn={soundOn} lang={lang} t={t} />}
         {page === 'teacher' && <TeacherGuide setPage={setPage} lang={lang} t={t} />}
       </div>
+      {t.speech[page] && <DengarButton texts={t.speech[page]} lang={lang} t={t} />}
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> {t.resetBtn}</button>
     </div>
   );
