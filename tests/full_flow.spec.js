@@ -24,14 +24,17 @@ test('Verify full user flow and props', async ({ page }) => {
   // Click steps in order
   const steps = page.locator('.stepping-stone');
   for (let i = 0; i < 6; i++) {
+    await page.waitForTimeout(600); // Wait for feedback animation
     await steps.nth(i).click({ force: true });
   }
+  await page.waitForTimeout(600);
   await page.screenshot({ path: 'full_flow_4_flow.png' });
 
   // Go to Level 3: Shop
   await page.click('button:has-text("Seterusnya: Misi Kedai")');
   await expect(page.locator('h1')).toContainText('Kedai Mini Ajaib');
   await page.click('button:has-text("Roti")', { force: true });
+  await page.click('button:has-text("Roti")', { force: true }); // Add second roti
   await page.click('button:has-text("Air Mineral")', { force: true });
   await page.screenshot({ path: 'full_flow_5_shop.png' });
 
