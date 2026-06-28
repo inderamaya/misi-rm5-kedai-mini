@@ -191,14 +191,40 @@ function playSFX(type, enabled) {
 function speakAllText(texts, lang) {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
+
+  const voices = window.speechSynthesis.getVoices();
   
-  texts.forEach((text) => {
-    const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = lang === 'bm' ? 'ms-MY' : 'en-US';
-    utterance.rate = 0.85;
-    utterance.pitch = 1.0;
-    window.speechSynthesis.speak(utterance);
-  });
+  const performSpeak = (availableVoices) => {
+    texts.forEach((text) => {
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = lang === 'bm' ? 'ms-MY' : 'en-US';
+
+      // Explicitly find and set the voice to ensure correct speaker
+      if (lang === 'bm') {
+        const msVoice = availableVoices.find(v => v.lang.toLowerCase().includes('ms-my')) ||
+                        availableVoices.find(v => v.lang.toLowerCase().includes('ms'));
+        if (msVoice) utterance.voice = msVoice;
+      } else {
+        const enVoice = availableVoices.find(v => v.lang.toLowerCase().includes('en-us')) ||
+                        availableVoices.find(v => v.lang.toLowerCase().includes('en'));
+        if (enVoice) utterance.voice = enVoice;
+      }
+
+      utterance.rate = 0.85;
+      utterance.pitch = 1.0;
+      window.speechSynthesis.speak(utterance);
+    });
+  };
+
+  if (voices.length === 0) {
+    const handleVoicesChanged = () => {
+      const updatedVoices = window.speechSynthesis.getVoices();
+      performSpeak(updatedVoices);
+    };
+    window.speechSynthesis.addEventListener('voiceschanged', handleVoicesChanged, { once: true });
+  } else {
+    performSpeak(voices);
+  }
 }
 
 function SpeakerButton({ texts, lang }) {
@@ -705,12 +731,22 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDoos
   const hasNeed = basket.some(id => items.find(i => i.id === id).tag.bm === 'KEPERLUAN');
   const excellent = valid && hasNeed;
 
+  const groupedBasket = useMemo(() => {
+    const counts = {};
+    basket.forEach(id => {
+      counts[id] = (counts[id] || 0) + 1;
+    });
+    return Object.entries(counts).map(([id, count]) => ({
+      item: items.find(i => i.id === id),
+      count
+    }));
+  }, [basket]);
+
   function toggleItem(id, isAdding = null) {
     const item = items.find(i => i.id === id);
-    const inBasket = basket.includes(id);
-    const shouldAdd = isAdding !== null ? isAdding : !inBasket;
+    const shouldAdd = isAdding !== null ? isAdding : true;
 
-    if (shouldAdd && !inBasket) {
+    if (shouldAdd) {
       if (total + item.price <= BUDGET) {
         setBasket(prev => [...prev, id]);
         setFeedback('correct');
@@ -721,10 +757,17 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDoos
         playSFX('wrong', soundOn);
         setDooseeState('encouraging');
       }
-    } else if (!shouldAdd && inBasket) {
-      setBasket(prev => prev.filter(x => x !== id));
-      playSFX('click', soundOn);
-      setDooseeState('thinking');
+    } else {
+      const idx = basket.indexOf(id);
+      if (idx !== -1) {
+        setBasket(prev => {
+          const next = [...prev];
+          next.splice(idx, 1);
+          return next;
+        });
+        playSFX('click', soundOn);
+        setDooseeState('thinking');
+      }
     }
     setTimeout(() => setFeedback(null), 500);
   }
@@ -795,12 +838,11 @@ function ShopScreen({ setPage, soundOn, lang, setProgress, t, guideMode, setDoos
                  onDrop={handleDrop}>
             <h2 style={{marginTop: 0}}>{t.troliSaya} 🛒</h2>
             {dragOver && <div style={{textAlign: 'center', color: 'var(--coin)', fontWeight: 'bold', marginBottom: '10px'}}>{lang === 'bm' ? 'Lepaskan di sini!' : 'Release here!'}</div>}
-            {basket.length === 0 ? <p>{t.pilihBarang}</p> : basket.map(id => {
-              const item = items.find(i => i.id === id);
-              return <div key={id} className="basket-item" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
-                <span>{item.name[lang]} (RM{item.price})</span>
+            {basket.length === 0 ? <p>{t.pilihBarang}</p> : groupedBasket.map(({ item, count }) => {
+              return <div key={item.id} className="basket-item" style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '5px'}}>
+                <span>{item.name[lang]} {count > 1 ? `x${count}` : ''} (RM{item.price * count})</span>
                 <button
-                  onClick={() => { toggleItem(id, false); }}
+                  onClick={() => { toggleItem(item.id, false); }}
                   style={{background: 'var(--red)', color: 'var(--white)', border: '2px solid var(--outline)', borderRadius: '5px', cursor: 'pointer', padding: '2px 8px', fontWeight: 'bold'}}
                 >X</button>
               </div>
@@ -1195,15 +1237,6 @@ function ProgressBar({ currentPage, PAGE_ORDER, onJump, t }) {
   );
 }
 
-function SwipeArrows({ onPrev, onNext, canPrev, canNext }) {
-  return (
-    <>
-      {canPrev && <div className="swipe-indicator left" onClick={onPrev}><ArrowLeft size={30} /></div>}
-      {canNext && <div className="swipe-indicator right" onClick={onNext}><ArrowRight size={30} /></div>}
-    </>
-  );
-}
-
 function App() {
   const [page, setPage] = useState('home');
   const [direction, setDirection] = useState('fade');
@@ -1216,6 +1249,10 @@ function App() {
   const t = translations[lang];
 
   useEffect(() => saveProgress(progress), [progress]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [page]);
 
   const goToPage = (nextPage) => {
     if (nextPage === page) return;
@@ -1232,28 +1269,6 @@ function App() {
     setPage(nextPage);
   };
 
-  const handleSwipe = (dir) => {
-    const currentIndex = PAGE_ORDER.indexOf(page);
-    if (currentIndex === -1) return;
-
-    if (dir === 'left' && currentIndex < PAGE_ORDER.length - 1) {
-      // Swiping left moves forward
-      // Check if current page is complete before allowing forward swipe
-      const isComplete = (page === 'home') ||
-                        (page === 'intro') ||
-                        (page === 'money' && progress.badges.includes('Lencana Wang')) ||
-                        (page === 'flow' && progress.badges.includes('Lencana Peta Alir')) ||
-                        (page === 'shop' && progress.badges.includes('Pembeli Bijak')) ||
-                        (page === 'wise' && progress.badges.includes('Lencana Carta Bijak')) ||
-                        (page === 'quiz' && progress.badges.includes('Juara Dunia Syiling RM5'));
-
-      if (isComplete) goToPage(PAGE_ORDER[currentIndex + 1]);
-    } else if (dir === 'right' && currentIndex > 0) {
-      // Swiping right moves backward
-      goToPage(PAGE_ORDER[currentIndex - 1]);
-    }
-  };
-
   const lastPage = React.useRef(page);
   useEffect(() => {
     if (lastPage.current !== page) {
@@ -1264,18 +1279,6 @@ function App() {
       else setDooseeState('thinking');
     }
   }, [page, soundOn]);
-
-  const touchStart = React.useRef(null);
-  const onTouchStart = (e) => { touchStart.current = e.touches[0].clientX; };
-  const onTouchEnd = (e) => {
-    if (!touchStart.current) return;
-    const touchEnd = e.changedTouches[0].clientX;
-    const diff = touchStart.current - touchEnd;
-    if (Math.abs(diff) > 50) {
-      handleSwipe(diff > 0 ? 'left' : 'right');
-    }
-    touchStart.current = null;
-  };
 
   const className = useMemo(() => [
     'appShell',
@@ -1289,20 +1292,8 @@ function App() {
     setPage('home');
   }
 
-  const currentIndex = PAGE_ORDER.indexOf(page);
-  const canPrev = currentIndex > 0;
-  const canNext = currentIndex !== -1 && currentIndex < PAGE_ORDER.length - 1 && (
-    (page === 'home') ||
-    (page === 'intro') ||
-    (page === 'money' && progress.badges.includes('Lencana Wang')) ||
-    (page === 'flow' && progress.badges.includes('Lencana Peta Alir')) ||
-    (page === 'shop' && progress.badges.includes('Pembeli Bijak')) ||
-    (page === 'wise' && progress.badges.includes('Lencana Carta Bijak')) ||
-    (page === 'quiz' && progress.badges.includes('Juara Dunia Syiling RM5'))
-  );
-
   return (
-    <div className={className} onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}>
+    <div className={className}>
       <div className="hills"><div className="hill"></div><div className="hill"></div><div className="hill"></div></div>
       <Header
         page={page}
@@ -1318,13 +1309,6 @@ function App() {
 
       <ProgressBar currentPage={page} PAGE_ORDER={PAGE_ORDER} onJump={goToPage} t={t} />
 
-      <SwipeArrows
-        onPrev={() => handleSwipe('right')}
-        onNext={() => handleSwipe('left')}
-        canPrev={canPrev}
-        canNext={canNext}
-      />
-
       <div className={`screen transition-${direction}`} key={page}>
         {page === 'home' && <HomeScreen setPage={goToPage} soundOn={soundOn} lang={lang} progress={progress} t={t} expression={dooseeState} />}
         {page === 'intro' && <IntroScreen setPage={goToPage} soundOn={soundOn} lang={lang} t={t} expression={dooseeState} />}
@@ -1337,6 +1321,7 @@ function App() {
         {page === 'teacher' && <TeacherGuide setPage={goToPage} lang={lang} t={t} />}
       </div>
       <button className="resetBtn" style={{position: 'fixed', bottom: '100px', right: '20px', zIndex: 100}} onClick={reset}><RefreshCcw size={16}/> {t.resetBtn}</button>
+      <footer className="watermark">© Aieryl Shazh</footer>
     </div>
   );
 }
